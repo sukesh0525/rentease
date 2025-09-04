@@ -1,3 +1,4 @@
+
 import type { Vehicle } from "@/lib/data";
 import { getStatusBadge } from "@/lib/utils.tsx";
 import Image from "next/image";

@@ -173,4 +173,3 @@ export function BookingDialog({ vehicle, isOpen, onClose }: BookingDialogProps) 
     </Dialog>
   );
 }
-

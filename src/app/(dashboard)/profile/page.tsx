@@ -1,3 +1,4 @@
+
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -12,7 +13,6 @@ export default function AdminProfilePage() {
   const admin = {
     name: 'Admin User',
     email: 'admin@rentease.com',
-    avatar: 'https://i.pravatar.cc/150?u=admin',
   };
 
   const totalCustomers = customers.length;
@@ -26,7 +26,6 @@ export default function AdminProfilePage() {
             <Card className="md:col-span-1">
                 <CardHeader className="items-center text-center">
                     <Avatar className="h-24 w-24 mb-4">
-                        <AvatarImage src={admin.avatar} alt={admin.name} />
                         <AvatarFallback><User className="h-12 w-12"/></AvatarFallback>
                     </Avatar>
                     <CardTitle className="font-headline text-2xl">{admin.name}</CardTitle>
