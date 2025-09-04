@@ -11,10 +11,16 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 export default function LoginPage() {
   const router = useRouter();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleAdminLogin = (e: React.FormEvent) => {
     e.preventDefault();
     // Mock login logic
     router.push('/dashboard');
+  };
+
+  const handleUserLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Mock login logic
+    router.push('/user/dashboard');
   };
 
   return (
@@ -35,7 +41,7 @@ export default function LoginPage() {
               <CardDescription>Enter your email below to login to your account.</CardDescription>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleLogin} className="grid gap-4">
+              <form onSubmit={handleAdminLogin} className="grid gap-4">
                 <div className="grid gap-2">
                   <Label htmlFor="admin-email">Email</Label>
                   <Input id="admin-email" type="email" placeholder="m@example.com" required />
@@ -69,7 +75,7 @@ export default function LoginPage() {
               <CardDescription>Enter your credentials to access the user dashboard.</CardDescription>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleLogin} className="grid gap-4">
+              <form onSubmit={handleUserLogin} className="grid gap-4">
                 <div className="grid gap-2">
                   <Label htmlFor="user-email">Email</Label>
                   <Input id="user-email" type="email" placeholder="user@example.com" required />

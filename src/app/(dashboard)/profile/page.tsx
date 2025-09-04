@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { User, Star } from 'lucide-react';
 import { Header } from '@/components/layout/header';
-import { getStatusBadge } from '@/lib/utils.tsx';
+import { getStatusBadge } from '@/lib/utils';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 export default function ProfilePage() {

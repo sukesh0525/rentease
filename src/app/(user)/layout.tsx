@@ -1,21 +1,19 @@
 import type { ReactNode } from 'react';
 import Link from 'next/link';
-import { Car } from 'lucide-react';
-import { SidebarNav } from '@/components/layout/sidebar-nav';
+import { UserSidebarNav } from '@/components/layout/user-sidebar-nav';
 import { Header } from '@/components/layout/header';
 
-export default function DashboardLayout({ children }: { children: ReactNode }) {
-  const pageTitle = "Dashboard"; // This would be dynamic in a real app
+export default function UserLayout({ children }: { children: ReactNode }) {
   return (
     <div className="flex h-screen bg-background">
       <aside className="w-64 flex-shrink-0 border-r bg-card">
         <div className="flex h-16 items-center justify-center border-b px-6">
-          <Link href="/dashboard" className="flex items-center gap-2">
+          <Link href="/user/dashboard" className="flex items-center gap-2">
             <h1 className="text-3xl font-bold text-primary font-headline">RentEase</h1>
           </Link>
         </div>
         <div className="mt-6">
-          <SidebarNav />
+          <UserSidebarNav />
         </div>
       </aside>
       <div className="flex flex-1 flex-col overflow-hidden">

@@ -12,8 +12,8 @@ export default function SignupPage() {
 
   const handleSignup = (e: React.FormEvent) => {
     e.preventDefault();
-    // Mock signup logic
-    router.push('/dashboard');
+    // Mock signup logic, redirect to user dashboard
+    router.push('/user/dashboard');
   };
   return (
     <div className="w-full max-w-md">
