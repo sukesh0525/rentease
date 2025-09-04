@@ -6,13 +6,12 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { User, Star } from 'lucide-react';
 import { Header } from '@/components/layout/header';
-import { getStatusBadge } from '@/lib/utils';
+import { getStatusBadge } from '@/lib/utils.tsx';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 export default function ProfilePage() {
   // This page now needs to determine if it's an admin or user.
-  // For this mock, we'll assume it's the first customer if not in an admin context.
-  // A real app would use session data.
+  // For this mock, we'll assume it's the first customer as we don't have a real auth session.
   const user = customers[0]; // Mock: using the first customer as the logged-in user
   const userBookings = bookings.filter(b => b.customerId === user.id).map(b => ({
       ...b,
@@ -61,11 +60,15 @@ export default function ProfilePage() {
                     </div>
                     <div className="grid gap-2">
                         <Label htmlFor="email">Email</Label>
-                        <Input id="email" type="email" defaultValue={user.email} />
+                        <Input id="email" type="email" defaultValue={user.email} disabled />
                     </div>
                     <div className="grid gap-2">
                         <Label htmlFor="phone">Phone</Label>
                         <Input id="phone" type="tel" defaultValue={user.phone} />
+                    </div>
+                     <div className="grid gap-2">
+                        <Label htmlFor="address">Address</Label>
+                        <Input id="address" defaultValue={user.address} />
                     </div>
                     <Button>Save Changes</Button>
                 </CardContent>
