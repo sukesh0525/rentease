@@ -14,7 +14,6 @@ import {
   DropdownMenuTrigger,
   DropdownMenuGroup,
 } from '@/components/ui/dropdown-menu';
-import { Avatar, AvatarFallback } from '../ui/avatar';
 import { bookings, customers, vehicles } from '@/lib/data';
 import { useToast } from '@/hooks/use-toast';
 import { useState, useEffect } from 'react';
@@ -116,12 +115,8 @@ export function Header({ title }: HeaderProps) {
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="relative h-10 w-10 rounded-full">
-              <Avatar className="h-10 w-10">
-                <AvatarFallback>
-                  <User />
-                </AvatarFallback>
-              </Avatar>
+            <Button variant="ghost" size="icon" className="relative h-10 w-10 rounded-full">
+              <User />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-56" align="end" forceMount>

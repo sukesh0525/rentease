@@ -1,56 +1,31 @@
 
 "use client";
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { customers, type Customer, vehicles, bookings } from '@/lib/data';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { User, Star, Pencil } from 'lucide-react';
+import { Star } from 'lucide-react';
 import { Header } from '@/components/layout/header';
 import { getStatusBadge } from '@/lib/utils.tsx';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Textarea } from '@/components/ui/textarea';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useToast } from '@/hooks/use-toast';
 
 export default function UserProfilePage() {
   const [user, setUser] = useState<Customer | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [avatar, setAvatar] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const { toast } = useToast();
 
   useEffect(() => {
     const userEmail = localStorage.getItem('loggedInUserEmail');
     if (userEmail) {
       const currentUser = customers.find(c => c.email === userEmail);
       setUser(currentUser || null);
-      setAvatar(currentUser?.avatar || null);
     }
     setIsLoading(false);
   }, []);
-
-  const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files[0]) {
-      const file = event.target.files[0];
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setAvatar(e.target?.result as string);
-        toast({
-            title: "Profile Picture Updated",
-            description: "Your new profile picture has been set.",
-        });
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleEditClick = () => {
-    fileInputRef.current?.click();
-  };
 
   const userBookings = user ? bookings.filter(b => b.customerId === user.id).map(b => ({
       ...b,
@@ -64,7 +39,6 @@ export default function UserProfilePage() {
         <div className="grid gap-6 md:grid-cols-3">
           <Card className="md:col-span-1">
             <CardHeader className="items-center text-center">
-              <Skeleton className="h-24 w-24 rounded-full mb-4" />
               <Skeleton className="h-6 w-3/4" />
               <Skeleton className="h-4 w-1/2" />
             </CardHeader>
@@ -104,29 +78,7 @@ export default function UserProfilePage() {
         <Header title="My Profile" />
         <div className="grid gap-6 md:grid-cols-3">
             <Card className="md:col-span-1">
-                <CardHeader className="items-center text-center">
-                    <div className="relative group">
-                        <Avatar className="h-24 w-24 mb-4">
-                            <AvatarImage src={avatar || undefined} alt={user.name} />
-                            <AvatarFallback><User className="h-12 w-12"/></AvatarFallback>
-                        </Avatar>
-                        <Button
-                            variant="outline"
-                            size="icon"
-                            className="absolute bottom-4 right-0 rounded-full h-8 w-8 bg-background opacity-0 group-hover:opacity-100 transition-opacity"
-                            onClick={handleEditClick}
-                        >
-                            <Pencil className="h-4 w-4" />
-                            <span className="sr-only">Edit Photo</span>
-                        </Button>
-                        <input
-                            type="file"
-                            ref={fileInputRef}
-                            onChange={handleAvatarChange}
-                            className="hidden"
-                            accept="image/png, image/jpeg, image/gif"
-                        />
-                    </div>
+                <CardHeader className="text-center">
                     <CardTitle className="font-headline text-2xl">{user.name}</CardTitle>
                     <CardDescription>{user.email}</CardDescription>
                 </CardHeader>

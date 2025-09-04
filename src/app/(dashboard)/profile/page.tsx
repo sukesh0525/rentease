@@ -1,10 +1,10 @@
 
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { User, Star, Users, Briefcase } from 'lucide-react';
+import { Users, Briefcase } from 'lucide-react';
 import { Header } from '@/components/layout/header';
 import { customers } from '@/lib/data';
 
@@ -12,7 +12,7 @@ export default function AdminProfilePage() {
   // Mocking admin details
   const admin = {
     name: 'Admin User',
-    email: 'admin@rentease.com',
+    email: 'admin-123@gmail.com',
   };
 
   const totalCustomers = customers.length;
@@ -24,14 +24,11 @@ export default function AdminProfilePage() {
         <Header title="Admin Profile" />
         <div className="grid gap-6 md:grid-cols-3">
             <Card className="md:col-span-1">
-                <CardHeader className="items-center text-center">
-                    <Avatar className="h-24 w-24 mb-4">
-                        <AvatarFallback><User className="h-12 w-12"/></AvatarFallback>
-                    </Avatar>
+                <CardHeader>
                     <CardTitle className="font-headline text-2xl">{admin.name}</CardTitle>
                     <CardDescription>{admin.email}</CardDescription>
                 </CardHeader>
-                <CardContent className="text-center">
+                <CardContent>
                    <div className="grid grid-cols-2 gap-4 text-center w-full border-t pt-4">
                         <div>
                             <p className="font-bold text-lg flex items-center justify-center">{totalCustomers} <Users className="h-4 w-4 ml-2"/></p>

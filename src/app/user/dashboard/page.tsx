@@ -3,7 +3,6 @@
 
 import { useEffect, useState } from 'react';
 import { bookings, customers, type Customer, vehicles } from '@/lib/data';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { User, Star, Wallet, CalendarCheck } from 'lucide-react';
@@ -40,7 +39,6 @@ export default function UserDashboardPage() {
              <div className="grid gap-6 md:grid-cols-3">
                 <Card className="md:col-span-1">
                     <CardHeader className="items-center text-center">
-                        <Skeleton className="h-24 w-24 rounded-full mb-4" />
                         <Skeleton className="h-6 w-3/4" />
                         <Skeleton className="h-4 w-1/2" />
                     </CardHeader>
@@ -93,11 +91,7 @@ export default function UserDashboardPage() {
         </div>
       <div className="grid gap-6 md:grid-cols-3">
         <Card className="md:col-span-1">
-          <CardHeader className="items-center text-center">
-            <Avatar className="h-24 w-24 mb-4">
-              <AvatarImage src={user.avatar} alt={user.name} />
-              <AvatarFallback><User className="h-12 w-12" /></AvatarFallback>
-            </Avatar>
+          <CardHeader className="text-center">
             <CardTitle className="font-headline text-2xl">{user.name}</CardTitle>
             <CardDescription>{user.email}</CardDescription>
           </CardHeader>
