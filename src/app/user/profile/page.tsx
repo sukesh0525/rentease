@@ -1,23 +1,81 @@
-import { bookings, customers, vehicles } from '@/lib/data';
+"use client";
+
+import { useEffect, useState } from 'react';
+import { bookings, customers, type Customer } from '@/lib/data';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { User, Star, Wallet, CalendarCheck } from 'lucide-react';
+import { User, Star } from 'lucide-react';
 import { Header } from '@/components/layout/header';
 import { getStatusBadge } from '@/lib/utils.tsx';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Textarea } from '@/components/ui/textarea';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function UserProfilePage() {
-  // This page now needs to determine if it's an admin or user.
-  // For this mock, we'll assume it's the first customer as we don't have a real auth session.
-  const user = customers[0]; // Mock: using the first customer as the logged-in user
-  const userBookings = bookings.filter(b => b.customerId === user.id).map(b => ({
+  const [user, setUser] = useState<Customer | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const userEmail = localStorage.getItem('loggedInUserEmail');
+    if (userEmail) {
+      const currentUser = customers.find(c => c.email === userEmail);
+      setUser(currentUser || null);
+    }
+    setIsLoading(false);
+  }, []);
+
+  const userBookings = user ? bookings.filter(b => b.customerId === user.id).map(b => ({
       ...b,
       vehicle: vehicles.find(v => v.id === b.vehicleId)
-  }));
+  })) : [];
+  
+  // Need to import vehicles for the above line
+  const { vehicles } = require('@/lib/data');
+
+  if (isLoading) {
+    return (
+      <div className="fade-in space-y-6">
+        <Header title="My Profile" />
+        <div className="grid gap-6 md:grid-cols-3">
+          <Card className="md:col-span-1">
+            <CardHeader className="items-center text-center">
+              <Skeleton className="h-24 w-24 rounded-full mb-4" />
+              <Skeleton className="h-6 w-3/4" />
+              <Skeleton className="h-4 w-1/2" />
+            </CardHeader>
+          </Card>
+          <Card className="md:col-span-2">
+            <CardHeader>
+              <CardTitle className="font-headline">Personal Information</CardTitle>
+              <CardDescription>Update your personal details here.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <Skeleton className="h-10 w-full" />
+              <Skeleton className="h-10 w-full" />
+              <Skeleton className="h-10 w-full" />
+              <Skeleton className="h-24 w-full" />
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="fade-in space-y-6">
+        <Header title="My Profile" />
+        <Card>
+          <CardContent className="p-6">
+            <p>Could not find user data. Please try logging in again.</p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="fade-in space-y-6">

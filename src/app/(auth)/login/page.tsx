@@ -30,6 +30,7 @@ export default function LoginPage() {
 
     if (user) {
         // In a real app, you'd also verify the password
+        localStorage.setItem('loggedInUserEmail', user.email);
         toast({
             title: "Login Successful",
             description: `Welcome back, ${user.name}!`,

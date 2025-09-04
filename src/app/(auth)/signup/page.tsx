@@ -49,6 +49,9 @@ export default function SignupPage() {
     };
     customers.push(newUser);
 
+    // Simulate login by storing email
+    localStorage.setItem('loggedInUserEmail', newUser.email);
+
     toast({
         title: "Account Created!",
         description: "You have been successfully signed up.",
