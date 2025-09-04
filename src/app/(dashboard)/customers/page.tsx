@@ -1,20 +1,20 @@
+
 import { customers } from "@/lib/data";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { StatCard } from "@/components/dashboard/stat-card";
 import { Briefcase, Users, Wallet, Star } from "lucide-react";
-import { Header } from "@/components/layout/header";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function CustomersPage() {
     const totalCustomers = customers.length;
     const corporateClients = customers.filter(c => c.type === 'Corporate').length;
     const totalSpentAll = customers.reduce((acc, c) => acc + c.totalSpent, 0);
-    const avgCustomerValue = totalSpentAll / totalCustomers;
+    const avgCustomerValue = totalCustomers > 0 ? totalSpentAll / totalCustomers : 0;
 
     return (
         <div className="fade-in space-y-6">
-            <Header title="Customer Management" />
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <StatCard title="Total Customers" value={totalCustomers.toString()} icon={<Users className="h-5 w-5"/>} />
                 <StatCard title="Corporate Clients" value={corporateClients.toString()} icon={<Briefcase className="h-5 w-5"/>} />
@@ -25,14 +25,18 @@ export default function CustomersPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {customers.map(c => (
                     <Card key={c.id} className="flex flex-col">
-                        <CardHeader>
-                            <div className="flex items-center justify-between">
+                        <CardHeader className="items-center text-center">
+                            <Avatar className="w-24 h-24 mb-4">
+                                <AvatarImage src={c.avatar} alt={c.name} />
+                                <AvatarFallback>{c.name.charAt(0)}</AvatarFallback>
+                            </Avatar>
+                            <div className="flex items-center justify-between w-full">
                                 <CardTitle className="font-headline text-xl">{c.name}</CardTitle>
                                 {c.type === 'VIP' && <Badge variant="destructive">VIP</Badge>}
                                 {c.type === 'Corporate' && <Badge>Corporate</Badge>}
                             </div>
                         </CardHeader>
-                        <CardContent className="flex-grow space-y-1 text-sm text-muted-foreground">
+                        <CardContent className="flex-grow space-y-1 text-sm text-muted-foreground text-center">
                             <p>{c.email}</p>
                             <p>{c.phone}</p>
                         </CardContent>

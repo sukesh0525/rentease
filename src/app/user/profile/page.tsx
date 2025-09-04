@@ -1,31 +1,59 @@
 
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { customers, type Customer, vehicles, bookings } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Star } from 'lucide-react';
+import { Star, Edit } from 'lucide-react';
 import { Header } from '@/components/layout/header';
 import { getStatusBadge } from '@/lib/utils.tsx';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Textarea } from '@/components/ui/textarea';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useToast } from '@/hooks/use-toast';
 
 export default function UserProfilePage() {
   const [user, setUser] = useState<Customer | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     const userEmail = localStorage.getItem('loggedInUserEmail');
     if (userEmail) {
       const currentUser = customers.find(c => c.email === userEmail);
-      setUser(currentUser || null);
+      if (currentUser) {
+        setUser(currentUser);
+        const savedAvatar = localStorage.getItem(`avatar_${userEmail}`);
+        setAvatarPreview(savedAvatar || currentUser.avatar);
+      }
     }
     setIsLoading(false);
   }, []);
+
+  const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            const result = reader.result as string;
+            setAvatarPreview(result);
+            if (user?.email) {
+                localStorage.setItem(`avatar_${user.email}`, result);
+                toast({
+                    title: "Profile Picture Updated",
+                    description: "Your new photo has been saved.",
+                });
+            }
+        };
+        reader.readAsDataURL(file);
+    }
+  };
 
   const userBookings = user ? bookings.filter(b => b.customerId === user.id).map(b => ({
       ...b,
@@ -39,6 +67,7 @@ export default function UserProfilePage() {
         <div className="grid gap-6 md:grid-cols-3">
           <Card className="md:col-span-1">
             <CardHeader className="items-center text-center">
+              <Skeleton className="h-24 w-24 rounded-full" />
               <Skeleton className="h-6 w-3/4" />
               <Skeleton className="h-4 w-1/2" />
             </CardHeader>
@@ -75,10 +104,31 @@ export default function UserProfilePage() {
 
   return (
     <div className="fade-in space-y-6">
-        <Header title="My Profile" />
         <div className="grid gap-6 md:grid-cols-3">
             <Card className="md:col-span-1">
-                <CardHeader className="text-center">
+                <CardHeader className="items-center text-center">
+                    <div className="relative">
+                        <Avatar className="h-24 w-24 mb-4">
+                            <AvatarImage src={avatarPreview || ''} alt={user.name} />
+                            <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                        </Avatar>
+                        <Button 
+                            variant="outline" 
+                            size="icon" 
+                            className="absolute bottom-4 right-0 rounded-full"
+                            onClick={() => fileInputRef.current?.click()}
+                        >
+                            <Edit className="h-4 w-4"/>
+                            <span className="sr-only">Edit photo</span>
+                        </Button>
+                        <Input 
+                            type="file" 
+                            ref={fileInputRef} 
+                            className="hidden" 
+                            accept="image/*"
+                            onChange={handleAvatarChange}
+                        />
+                    </div>
                     <CardTitle className="font-headline text-2xl">{user.name}</CardTitle>
                     <CardDescription>{user.email}</CardDescription>
                 </CardHeader>

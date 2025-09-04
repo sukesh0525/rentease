@@ -1,13 +1,12 @@
+
 import { StatCard } from "@/components/dashboard/stat-card";
 import { ReportCharts } from "@/components/reports/charts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Gauge, Star, Calendar, Wallet } from "lucide-react";
-import { Header } from "@/components/layout/header";
 
 export default function ReportsPage() {
     return (
         <div className="fade-in space-y-6">
-            <Header title="Reports & Analytics" />
             <Card>
                 <CardHeader>
                     <CardTitle className="font-headline text-2xl">Business Overview</CardTitle>

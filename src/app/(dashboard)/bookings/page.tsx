@@ -8,7 +8,6 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { getPaymentBadge, getStatusBadge } from "@/lib/utils.tsx";
 import { StatCard } from "@/components/dashboard/stat-card";
 import { Book, CalendarCheck, Check, DollarSign, Wallet, X } from "lucide-react";
-import { Header } from "@/components/layout/header";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import type { Booking } from "@/lib/data";
@@ -44,7 +43,6 @@ export default function BookingsPage() {
 
     return (
         <div className="fade-in space-y-6">
-            <Header title="Booking Management" />
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <StatCard title="Total Bookings" value={totalBookings.toString()} icon={<Book className="h-5 w-5"/>} />
                 <StatCard title="Active Bookings" value={activeBookings.toString()} icon={<CalendarCheck className="h-5 w-5"/>} />

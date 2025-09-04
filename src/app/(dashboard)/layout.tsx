@@ -1,3 +1,4 @@
+
 import type { ReactNode } from 'react';
 import Link from 'next/link';
 import { Car } from 'lucide-react';
@@ -19,6 +20,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
         </div>
       </aside>
       <div className="flex flex-1 flex-col overflow-hidden">
+        <Header title={pageTitle} />
         <main className="flex-1 overflow-y-auto">
           <div className="p-6">{children}</div>
         </main>

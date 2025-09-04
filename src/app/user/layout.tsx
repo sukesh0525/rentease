@@ -1,7 +1,8 @@
+
 import type { ReactNode } from 'react';
 import Link from 'next/link';
 import { UserSidebarNav } from '@/components/layout/user-sidebar-nav';
-import { Header } from '@/components/layout/header';
+import { UserHeader } from '@/components/layout/user-header';
 
 export default function UserLayout({ children }: { children: ReactNode }) {
   return (
@@ -17,6 +18,7 @@ export default function UserLayout({ children }: { children: ReactNode }) {
         </div>
       </aside>
       <div className="flex flex-1 flex-col overflow-hidden">
+        <UserHeader />
         <main className="flex-1 overflow-y-auto">
           <div className="p-6">{children}</div>
         </main>

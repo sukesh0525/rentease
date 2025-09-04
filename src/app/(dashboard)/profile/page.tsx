@@ -5,8 +5,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Users, Briefcase } from 'lucide-react';
-import { Header } from '@/components/layout/header';
 import { customers } from '@/lib/data';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 
 export default function AdminProfilePage() {
   // Mocking admin details
@@ -21,10 +21,12 @@ export default function AdminProfilePage() {
 
   return (
     <div className="fade-in space-y-6">
-        <Header title="Admin Profile" />
         <div className="grid gap-6 md:grid-cols-3">
             <Card className="md:col-span-1">
-                <CardHeader>
+                <CardHeader className="items-center text-center">
+                    <Avatar className="h-24 w-24 mb-4">
+                        <AvatarFallback>A</AvatarFallback>
+                    </Avatar>
                     <CardTitle className="font-headline text-2xl">{admin.name}</CardTitle>
                     <CardDescription>{admin.email}</CardDescription>
                 </CardHeader>
