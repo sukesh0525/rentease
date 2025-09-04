@@ -7,9 +7,16 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useToast } from '@/hooks/use-toast';
+import { customers } from '@/lib/data';
+import { useState } from 'react';
 
 export default function LoginPage() {
   const router = useRouter();
+  const { toast } = useToast();
+  const [userEmail, setUserEmail] = useState('');
+  const [userPassword, setUserPassword] = useState('');
+
 
   const handleAdminLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -19,8 +26,23 @@ export default function LoginPage() {
 
   const handleUserLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    // Mock login logic
-    router.push('/user/dashboard');
+    const user = customers.find(c => c.email === userEmail);
+
+    if (user) {
+        // In a real app, you'd also verify the password
+        toast({
+            title: "Login Successful",
+            description: `Welcome back, ${user.name}!`,
+        });
+        router.push('/user/dashboard');
+    } else {
+        toast({
+            variant: "destructive",
+            title: "Login Failed",
+            description: "No account found with that email. Please sign up.",
+        });
+        router.push('/signup');
+    }
   };
 
   return (
@@ -78,7 +100,14 @@ export default function LoginPage() {
               <form onSubmit={handleUserLogin} className="grid gap-4">
                 <div className="grid gap-2">
                   <Label htmlFor="user-email">Email</Label>
-                  <Input id="user-email" type="email" placeholder="user@example.com" required />
+                  <Input 
+                    id="user-email" 
+                    type="email" 
+                    placeholder="user@example.com" 
+                    required 
+                    value={userEmail}
+                    onChange={(e) => setUserEmail(e.target.value)}
+                  />
                 </div>
                 <div className="grid gap-2">
                    <div className="flex items-center">
@@ -87,7 +116,13 @@ export default function LoginPage() {
                       Forgot your password?
                     </Link>
                   </div>
-                  <Input id="user-password" type="password" required />
+                  <Input 
+                    id="user-password" 
+                    type="password" 
+                    required 
+                    value={userPassword}
+                    onChange={(e) => setUserPassword(e.target.value)}
+                  />
                 </div>
                 <Button type="submit" className="w-full">
                   Login as User

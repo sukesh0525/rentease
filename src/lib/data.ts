@@ -19,6 +19,7 @@ export interface Customer {
     name: string;
     email: string;
     phone: string;
+    address?: string;
     memberSince: string;
     totalSpent: number;
     bookingsCount: number;
@@ -50,11 +51,11 @@ export const vehicles: Vehicle[] = [
 ];
 
 export const customers: Customer[] = [
-    { id: 1, name: 'Rajesh Kumar', email: 'rajesh@example.com', phone: '+91 98765 43210', memberSince: '2023-01-15', totalSpent: 8400, bookingsCount: 2, rating: 4.8, type: 'Individual', avatar: 'https://i.pravatar.cc/150?u=rajesh' },
-    { id: 2, name: 'Priya Sharma', email: 'priya@example.com', phone: '+91 98765 12345', memberSince: '2023-03-22', totalSpent: 14000, bookingsCount: 3, rating: 4.9, type: 'VIP', avatar: 'https://i.pravatar.cc/150?u=priya' },
-    { id: 3, name: 'Amit Patel', email: 'amit@example.com', phone: '+91 91234 56789', memberSince: '2022-11-05', totalSpent: 35000, bookingsCount: 5, rating: 4.7, type: 'Individual', avatar: 'https://i.pravatar.cc/150?u=amit' },
-    { id: 4, name: 'Sunita Singh', email: 'sunita@example.com', phone: '+91 99887 76655', memberSince: '2023-05-10', totalSpent: 10000, bookingsCount: 1, rating: 5.0, type: 'Corporate', avatar: 'https://i.pravatar.cc/150?u=sunita' },
-    { id: 5, name: 'Vikram Gupta', email: 'vikram@example.com', phone: '+91 92345 67890', memberSince: '2023-02-18', totalSpent: 5600, bookingsCount: 1, rating: 4.5, type: 'Individual', avatar: 'https://i.pravatar.cc/150?u=vikram' },
+    { id: 1, name: 'Rajesh Kumar', email: 'rajesh@example.com', phone: '+91 98765 43210', address: '123, Main Road, Anantapur', memberSince: '2023-01-15', totalSpent: 8400, bookingsCount: 2, rating: 4.8, type: 'Individual', avatar: 'https://i.pravatar.cc/150?u=rajesh' },
+    { id: 2, name: 'Priya Sharma', email: 'priya@example.com', phone: '+91 98765 12345', address: '456, Park Avenue, Kurnool', memberSince: '2023-03-22', totalSpent: 14000, bookingsCount: 3, rating: 4.9, type: 'VIP', avatar: 'https://i.pravatar.cc/150?u=priya' },
+    { id: 3, name: 'Amit Patel', email: 'amit@example.com', phone: '+91 91234 56789', address: '789, Green Street, Kadapa', memberSince: '2022-11-05', totalSpent: 35000, bookingsCount: 5, rating: 4.7, type: 'Individual', avatar: 'https://i.pravatar.cc/150?u=amit' },
+    { id: 4, name: 'Sunita Singh', email: 'sunita@example.com', phone: '+91 99887 76655', address: '101, Diamond Plaza, Guntur', memberSince: '2023-05-10', totalSpent: 10000, bookingsCount: 1, rating: 5.0, type: 'Corporate', avatar: 'https://i.pravatar.cc/150?u=sunita' },
+    { id: 5, name: 'Vikram Gupta', email: 'vikram@example.com', phone: '+91 92345 67890', address: '212, Ocean View, Visakhapatnam', memberSince: '2023-02-18', totalSpent: 5600, bookingsCount: 1, rating: 4.5, type: 'Individual', avatar: 'https://i.pravatar.cc/150?u=vikram' },
 ];
 
 export const bookings: Booking[] = [
