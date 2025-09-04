@@ -25,7 +25,7 @@ const bookingStatusData = [
 
 const revenueChartConfig = {
     revenue: {
-      label: "Revenue (₹ K)",
+      label: "Revenue (₹k)",
       color: "hsl(var(--chart-1))",
     },
 }

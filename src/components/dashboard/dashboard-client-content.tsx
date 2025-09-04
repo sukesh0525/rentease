@@ -24,7 +24,7 @@ const fleetChartData = [
 
 const chartConfig = {
     revenue: {
-      label: "Revenue (₹ K)",
+      label: "Revenue (₹k)",
       color: "hsl(var(--chart-1))",
     },
     utilization: {

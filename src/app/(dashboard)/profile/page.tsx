@@ -37,7 +37,7 @@ export default function ProfilePage() {
                             <p className="text-xs text-muted-foreground">Bookings</p>
                         </div>
                         <div>
-                            <p className="font-bold text-lg">₹{(user.totalSpent/1000).toFixed(1)}K</p>
+                            <p className="font-bold text-lg">₹{(user.totalSpent/1000).toFixed(1)}k</p>
                             <p className="text-xs text-muted-foreground">Total Spent</p>
                         </div>
                         <div>
