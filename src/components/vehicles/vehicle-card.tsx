@@ -4,7 +4,12 @@ import Image from "next/image";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "../ui/card";
 import { Button } from "../ui/button";
 
-export function VehicleCard({ vehicle }: { vehicle: Vehicle }) {
+interface VehicleCardProps {
+    vehicle: Vehicle;
+    onBookNow: (vehicle: Vehicle) => void;
+}
+
+export function VehicleCard({ vehicle, onBookNow }: VehicleCardProps) {
     return (
         <Card className="overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col">
             <CardHeader className="p-0">
@@ -34,7 +39,7 @@ export function VehicleCard({ vehicle }: { vehicle: Vehicle }) {
             </CardContent>
             <CardFooter className="bg-muted/50 p-4 flex justify-between items-center">
                 <p className="text-lg font-semibold">₹{vehicle.pricePerDay.toLocaleString()}<span className="text-sm font-normal text-muted-foreground">/day</span></p>
-                <Button>Book Now</Button>
+                <Button onClick={() => onBookNow(vehicle)} disabled={vehicle.status !== 'Available'}>Book Now</Button>
             </CardFooter>
         </Card>
     );

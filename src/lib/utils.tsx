@@ -6,7 +6,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export const getStatusBadge = (status: 'Available' | 'Rented' | 'Maintenance' | 'Active' | 'Completed' | 'Confirmed' | 'Cancelled') => {
+export const getStatusBadge = (status: 'Available' | 'Rented' | 'Maintenance' | 'Active' | 'Completed' | 'Confirmed' | 'Cancelled' | 'Pending') => {
     switch (status) {
         case 'Available': return <Badge variant="secondary" className="bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300">Available</Badge>;
         case 'Rented': return <Badge variant="secondary" className="bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300">Rented</Badge>;
@@ -15,6 +15,7 @@ export const getStatusBadge = (status: 'Available' | 'Rented' | 'Maintenance' | 
         case 'Completed': return <Badge variant="secondary">Completed</Badge>;
         case 'Confirmed': return <Badge variant="secondary" className="bg-indigo-100 text-indigo-800 dark:bg-indigo-900/50 dark:text-indigo-300">Confirmed</Badge>;
         case 'Cancelled': return <Badge variant="destructive" className="bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300">Cancelled</Badge>;
+        case 'Pending': return <Badge variant="secondary" className="bg-orange-100 text-orange-800 dark:bg-orange-900/50 dark:text-orange-300">Pending</Badge>;
         default: return <Badge>{status}</Badge>;
     }
 };

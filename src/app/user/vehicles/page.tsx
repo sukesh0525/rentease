@@ -1,13 +1,29 @@
-import { vehicles } from "@/lib/data";
+
+"use client";
+
+import { vehicles, type Vehicle } from "@/lib/data";
 import { VehicleCard } from "@/components/vehicles/vehicle-card";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Header } from "@/components/layout/header";
+import { useState } from "react";
+import { BookingDialog } from "@/components/vehicles/booking-dialog";
 
 export default function UserVehiclesPage() {
+  const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
+
   const availableVehicles = vehicles.filter(v => v.status === 'Available');
+
+  const handleBookNow = (vehicle: Vehicle) => {
+    setSelectedVehicle(vehicle);
+  };
+
+  const handleCloseDialog = () => {
+    setSelectedVehicle(null);
+  };
+
   return (
     <div className="fade-in space-y-6">
       <Header title="Our Fleet" />
@@ -42,9 +58,18 @@ export default function UserVehiclesPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {availableVehicles.map((vehicle) => (
-          <VehicleCard key={vehicle.id} vehicle={vehicle} />
+          <VehicleCard key={vehicle.id} vehicle={vehicle} onBookNow={handleBookNow} />
         ))}
       </div>
+
+      {selectedVehicle && (
+        <BookingDialog 
+            vehicle={selectedVehicle} 
+            isOpen={!!selectedVehicle}
+            onClose={handleCloseDialog}
+        />
+      )}
     </div>
   );
 }
+

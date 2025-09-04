@@ -16,12 +16,25 @@ export default function LoginPage() {
   const { toast } = useToast();
   const [userEmail, setUserEmail] = useState('');
   const [userPassword, setUserPassword] = useState('');
+  const [adminEmail, setAdminEmail] = useState('');
+  const [adminPassword, setAdminPassword] = useState('');
 
 
   const handleAdminLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    // Mock login logic
-    router.push('/dashboard');
+    if (adminEmail === 'admin@rentease.com' && adminPassword === 'admin123') {
+        toast({
+            title: "Admin Login Successful",
+            description: "Welcome back, Admin!",
+        });
+        router.push('/dashboard');
+    } else {
+        toast({
+            variant: "destructive",
+            title: "Login Failed",
+            description: "Invalid admin credentials.",
+        });
+    }
   };
 
   const handleUserLogin = (e: React.FormEvent) => {
@@ -67,27 +80,32 @@ export default function LoginPage() {
               <form onSubmit={handleAdminLogin} className="grid gap-4">
                 <div className="grid gap-2">
                   <Label htmlFor="admin-email">Email</Label>
-                  <Input id="admin-email" type="email" placeholder="m@example.com" required />
+                  <Input 
+                    id="admin-email" 
+                    type="email" 
+                    placeholder="admin@rentease.com" 
+                    required 
+                    value={adminEmail}
+                    onChange={(e) => setAdminEmail(e.target.value)}
+                    />
                 </div>
                 <div className="grid gap-2">
                   <div className="flex items-center">
                     <Label htmlFor="admin-password">Password</Label>
-                    <Link href="#" className="ml-auto inline-block text-sm underline">
-                      Forgot your password?
-                    </Link>
                   </div>
-                  <Input id="admin-password" type="password" required />
+                  <Input 
+                    id="admin-password" 
+                    type="password" 
+                    required 
+                    placeholder="admin123"
+                    value={adminPassword}
+                    onChange={(e) => setAdminPassword(e.target.value)}
+                    />
                 </div>
                 <Button type="submit" className="w-full">
                   Login as Admin
                 </Button>
               </form>
-              <div className="mt-4 text-center text-sm">
-                Don&apos;t have an account?{' '}
-                <Link href="/signup" className="underline">
-                  Sign up
-                </Link>
-              </div>
             </CardContent>
           </Card>
         </TabsContent>
