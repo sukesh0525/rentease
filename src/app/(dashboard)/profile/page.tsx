@@ -4,13 +4,15 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Separator } from '@/components/ui/separator';
 import { User, Star } from 'lucide-react';
 import { Header } from '@/components/layout/header';
 import { getStatusBadge } from '@/lib/utils';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 export default function ProfilePage() {
+  // This page now needs to determine if it's an admin or user.
+  // For this mock, we'll assume it's the first customer if not in an admin context.
+  // A real app would use session data.
   const user = customers[0]; // Mock: using the first customer as the logged-in user
   const userBookings = bookings.filter(b => b.customerId === user.id).map(b => ({
       ...b,
