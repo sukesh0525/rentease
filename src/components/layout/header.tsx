@@ -1,5 +1,8 @@
+"use client";
+
 import Link from 'next/link';
-import { Bell, Car, User } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { Bell, User } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -17,6 +20,7 @@ type HeaderProps = {
 };
 
 export function Header({ title }: HeaderProps) {
+  const router = useRouter();
   return (
     <header className="flex h-16 items-center justify-between border-b bg-card px-6 shrink-0">
       <h1 className="text-2xl font-semibold text-foreground font-headline">{title}</h1>
@@ -52,7 +56,7 @@ export function Header({ title }: HeaderProps) {
             <DropdownMenuItem>Billing</DropdownMenuItem>
             <DropdownMenuItem>Settings</DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Log out</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => router.push('/login')}>Log out</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

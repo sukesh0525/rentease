@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -18,42 +19,84 @@ export default function LoginPage() {
 
   return (
     <div className="w-full max-w-md">
-       <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-primary font-headline">RentEase</h1>
-            <p className="text-muted-foreground">Welcome Back! Please enter your details.</p>
-        </div>
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-2xl font-headline">Login</CardTitle>
-          <CardDescription>Enter your email below to login to your account.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleLogin} className="grid gap-4">
-            <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" placeholder="m@example.com" required />
-            </div>
-            <div className="grid gap-2">
-              <div className="flex items-center">
-                <Label htmlFor="password">Password</Label>
-                <Link href="#" className="ml-auto inline-block text-sm underline">
-                  Forgot your password?
+      <div className="text-center mb-8">
+        <h1 className="text-4xl font-bold text-primary font-headline">RentEase</h1>
+        <p className="text-muted-foreground">Welcome Back! Please enter your details.</p>
+      </div>
+      <Tabs defaultValue="admin" className="w-full">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="admin">Admin Login</TabsTrigger>
+          <TabsTrigger value="user">User Login</TabsTrigger>
+        </TabsList>
+        <TabsContent value="admin">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-2xl font-headline">Admin Login</CardTitle>
+              <CardDescription>Enter your email below to login to your account.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleLogin} className="grid gap-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="admin-email">Email</Label>
+                  <Input id="admin-email" type="email" placeholder="m@example.com" required />
+                </div>
+                <div className="grid gap-2">
+                  <div className="flex items-center">
+                    <Label htmlFor="admin-password">Password</Label>
+                    <Link href="#" className="ml-auto inline-block text-sm underline">
+                      Forgot your password?
+                    </Link>
+                  </div>
+                  <Input id="admin-password" type="password" required />
+                </div>
+                <Button type="submit" className="w-full">
+                  Login as Admin
+                </Button>
+              </form>
+              <div className="mt-4 text-center text-sm">
+                Don&apos;t have an account?{' '}
+                <Link href="/signup" className="underline">
+                  Sign up
                 </Link>
               </div>
-              <Input id="password" type="password" required />
-            </div>
-            <Button type="submit" className="w-full">
-              Login
-            </Button>
-          </form>
-          <div className="mt-4 text-center text-sm">
-            Don&apos;t have an account?{' '}
-            <Link href="/signup" className="underline">
-              Sign up
-            </Link>
-          </div>
-        </CardContent>
-      </Card>
+            </CardContent>
+          </Card>
+        </TabsContent>
+        <TabsContent value="user">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-2xl font-headline">User Login</CardTitle>
+              <CardDescription>Enter your credentials to access the user dashboard.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleLogin} className="grid gap-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="user-email">Email</Label>
+                  <Input id="user-email" type="email" placeholder="user@example.com" required />
+                </div>
+                <div className="grid gap-2">
+                   <div className="flex items-center">
+                    <Label htmlFor="user-password">Password</Label>
+                    <Link href="#" className="ml-auto inline-block text-sm underline">
+                      Forgot your password?
+                    </Link>
+                  </div>
+                  <Input id="user-password" type="password" required />
+                </div>
+                <Button type="submit" className="w-full">
+                  Login as User
+                </Button>
+              </form>
+               <div className="mt-4 text-center text-sm">
+                Don&apos;t have an account?{' '}
+                <Link href="/signup" className="underline">
+                  Sign up
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
