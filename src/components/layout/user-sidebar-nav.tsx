@@ -14,7 +14,7 @@ const navItems = [
   { href: '/user/dashboard', label: 'Dashboard', icon: LayoutGrid },
   { href: '/user/vehicles', label: 'Available Vehicles', icon: Car },
   { href: '/user/bookings', label: 'My Bookings', icon: History },
-  { href: '/profile', label: 'My Profile', icon: User },
+  { href: '/user/profile', label: 'My Profile', icon: User },
 ];
 
 export function UserSidebarNav() {

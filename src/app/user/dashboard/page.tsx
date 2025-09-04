@@ -41,8 +41,8 @@ export default function UserDashboardPage() {
             <CardDescription>{user.email}</CardDescription>
           </CardHeader>
           <CardContent className="text-center">
-             <Link href="/profile" passHref>
-                <Button className="w-full">Edit Profile</Button>
+             <Link href="/user/profile" passHref>
+                <Button className="w-full">View & Edit Profile</Button>
              </Link>
           </CardContent>
         </Card>
