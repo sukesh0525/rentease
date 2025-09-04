@@ -1,3 +1,4 @@
+
 export interface Vehicle {
     id: number;
     name: string;
@@ -37,6 +38,11 @@ export interface Booking {
     amount: number;
     status: 'Active' | 'Completed' | 'Confirmed' | 'Cancelled' | 'Pending';
     payment: 'Paid' | 'Pending';
+    tracking?: {
+        status: 'On the move' | 'Parked' | 'Delayed';
+        lastSeen: string;
+        location: string;
+    }
 }
 
 export const vehicles: Vehicle[] = [
@@ -59,8 +65,8 @@ export const customers: Customer[] = [
 ];
 
 export const bookings: Booking[] = [
-    { id: 'BK001', customerId: 1, vehicleId: 1, startDate: '2025-09-15', endDate: '2025-09-22', amount: 8400, status: 'Active', payment: 'Paid' },
-    { id: 'BK002', customerId: 2, vehicleId: 3, startDate: '2025-09-18', endDate: '2025-09-24', amount: 14000, status: 'Active', payment: 'Paid' },
+    { id: 'BK001', customerId: 1, vehicleId: 1, startDate: '2025-09-15', endDate: '2025-09-22', amount: 8400, status: 'Active', payment: 'Paid', tracking: { status: 'On the move', lastSeen: '5 mins ago', location: 'Hyderabad Ring Road' } },
+    { id: 'BK002', customerId: 2, vehicleId: 3, startDate: '2025-09-18', endDate: '2025-09-24', amount: 14000, status: 'Active', payment: 'Paid', tracking: { status: 'Parked', lastSeen: '45 mins ago', location: 'Vijayawada Benz Circle' } },
     { id: 'BK003', customerId: 3, vehicleId: 2, startDate: '2025-09-12', endDate: '2025-09-24', amount: 26400, status: 'Completed', payment: 'Paid' },
     { id: 'BK004', customerId: 4, vehicleId: 6, startDate: '2025-09-20', endDate: '2025-09-23', amount: 10000, status: 'Pending', payment: 'Pending' },
     { id: 'BK005', customerId: 5, vehicleId: 4, startDate: '2025-09-19', endDate: '2025-09-25', amount: 5600, status: 'Confirmed', payment: 'Paid' },
