@@ -1,3 +1,6 @@
+
+"use client";
+
 import { vehicles } from "@/lib/data";
 import { VehicleCard } from "@/components/vehicles/vehicle-card";
 import { Card, CardContent } from "@/components/ui/card";

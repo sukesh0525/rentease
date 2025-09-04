@@ -1,4 +1,6 @@
 
+"use client";
+
 import type { Vehicle } from "@/lib/data";
 import { getStatusBadge } from "@/lib/utils.tsx";
 import Image from "next/image";
@@ -7,10 +9,15 @@ import { Button } from "../ui/button";
 
 interface VehicleCardProps {
     vehicle: Vehicle;
-    onBookNow: (vehicle: Vehicle) => void;
+    onBookNow?: (vehicle: Vehicle) => void;
 }
 
 export function VehicleCard({ vehicle, onBookNow }: VehicleCardProps) {
+    const handleBookNowClick = () => {
+        if (onBookNow) {
+            onBookNow(vehicle);
+        }
+    }
     return (
         <Card className="overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col">
             <CardHeader className="p-0">
@@ -40,7 +47,11 @@ export function VehicleCard({ vehicle, onBookNow }: VehicleCardProps) {
             </CardContent>
             <CardFooter className="bg-muted/50 p-4 flex justify-between items-center">
                 <p className="text-lg font-semibold">₹{vehicle.pricePerDay.toLocaleString()}<span className="text-sm font-normal text-muted-foreground">/day</span></p>
-                <Button onClick={() => onBookNow(vehicle)} disabled={vehicle.status !== 'Available'}>Book Now</Button>
+                {onBookNow ? (
+                    <Button onClick={handleBookNowClick} disabled={vehicle.status !== 'Available'}>Book Now</Button>
+                ) : (
+                    <Button disabled={vehicle.status !== 'Available'}>View Details</Button>
+                )}
             </CardFooter>
         </Card>
     );
