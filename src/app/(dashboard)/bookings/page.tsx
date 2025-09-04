@@ -29,18 +29,13 @@ export default function BookingsPage() {
     const avgBookingValue = totalRevenue > 0 ? totalRevenue / totalBookings : 0;
 
     const handleBookingAction = (bookingId: string, newStatus: 'Confirmed' | 'Cancelled') => {
-        // In a real app, this would be an API call. Here we just update mock data.
-        const updatedBookings = currentBookings.map(b => 
-            b.id === bookingId ? { ...b, status: newStatus } : b
-        );
-        setCurrentBookings(updatedBookings);
-        // This is a simulation, in a real app you would update the source `bookings` array
-        // For now, we will update the original array to make the changes persist across page navigations.
         const bookingIndex = bookings.findIndex(b => b.id === bookingId);
         if (bookingIndex !== -1) {
             bookings[bookingIndex].status = newStatus;
         }
 
+        setCurrentBookings([...bookings]);
+        
         toast({
             title: `Booking ${newStatus}`,
             description: `The booking request ${bookingId} has been ${newStatus.toLowerCase()}.`,
