@@ -22,7 +22,7 @@ export default function LoginPage() {
 
   const handleAdminLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (adminEmail === 'admin@rentease.com' && adminPassword === 'admin123') {
+    if (adminEmail === 'admin-123@gmail.com' && adminPassword === '14H9') {
         toast({
             title: "Admin Login Successful",
             description: "Welcome back, Admin!",
@@ -83,7 +83,7 @@ export default function LoginPage() {
                   <Input 
                     id="admin-email" 
                     type="email" 
-                    placeholder="admin@rentease.com" 
+                    placeholder="admin-123@gmail.com" 
                     required 
                     value={adminEmail}
                     onChange={(e) => setAdminEmail(e.target.value)}
@@ -97,7 +97,7 @@ export default function LoginPage() {
                     id="admin-password" 
                     type="password" 
                     required 
-                    placeholder="admin123"
+                    placeholder="14H9"
                     value={adminPassword}
                     onChange={(e) => setAdminPassword(e.target.value)}
                     />
