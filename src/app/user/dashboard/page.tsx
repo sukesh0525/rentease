@@ -11,53 +11,28 @@ import { getStatusBadge } from '@/lib/utils.tsx';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { StatCard } from '@/components/dashboard/stat-card';
 import Link from 'next/link';
-import { Skeleton } from '@/components/ui/skeleton';
+import { LoadingScreen } from '@/components/common/loader';
 
 export default function UserDashboardPage() {
   const [user, setUser] = useState<Customer | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const userEmail = localStorage.getItem('loggedInUserEmail');
-    if (userEmail) {
-      const currentUser = customers.find(c => c.email === userEmail);
-      setUser(currentUser || null);
-    }
-    setIsLoading(false);
+    // Simulate a loading delay
+    const timer = setTimeout(() => {
+        const userEmail = localStorage.getItem('loggedInUserEmail');
+        if (userEmail) {
+        const currentUser = customers.find(c => c.email === userEmail);
+        setUser(currentUser || null);
+        }
+        setIsLoading(false);
+    }, 1500);
+
+    return () => clearTimeout(timer);
   }, []);
 
   if (isLoading) {
-    return (
-        <div className="fade-in space-y-6">
-            <Header title="Welcome!" />
-             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <Skeleton className="h-24" />
-                <Skeleton className="h-24" />
-                <Skeleton className="h-24" />
-                <Skeleton className="h-24" />
-            </div>
-             <div className="grid gap-6 md:grid-cols-3">
-                <Card className="md:col-span-1">
-                    <CardHeader className="items-center text-center">
-                        <Skeleton className="h-6 w-3/4" />
-                        <Skeleton className="h-4 w-1/2" />
-                    </CardHeader>
-                </Card>
-                <Card className="md:col-span-2">
-                    <CardHeader>
-                        <CardTitle className="font-headline">Recent Activity</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="space-y-4">
-                            <Skeleton className="h-10 w-full" />
-                            <Skeleton className="h-10 w-full" />
-                            <Skeleton className="h-10 w-full" />
-                        </div>
-                    </CardContent>
-                </Card>
-            </div>
-        </div>
-    );
+    return <LoadingScreen />;
   }
 
   if (!user) {

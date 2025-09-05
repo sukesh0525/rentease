@@ -19,7 +19,7 @@ export function VehicleCard({ vehicle, onBookNow }: VehicleCardProps) {
         }
     }
     return (
-        <Card className="overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col">
+        <Card className="overflow-hidden interactive-card flex flex-col">
             <CardHeader className="p-0">
                 <Image 
                     src={vehicle.image} 

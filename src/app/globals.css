@@ -8,27 +8,27 @@ body {
 
 @layer base {
   :root {
-    --background: 208 100% 97%;
+    --background: 208 100% 97%; /* Alice Blue */
     --foreground: 224 71.4% 4.1%;
     --card: 0 0% 100%;
     --card-foreground: 224 71.4% 4.1%;
     --popover: 0 0% 100%;
     --popover-foreground: 224 71.4% 4.1%;
-    --primary: 226 76% 58%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 197 71% 73%; /* Sky Blue */
+    --primary-foreground: 224 71.4% 4.1%; /* Dark text on light blue */
     --secondary: 220 14.3% 95.9%;
     --secondary-foreground: 222.2 47.4% 11.2%;
     --muted: 220 14.3% 95.9%;
     --muted-foreground: 220 8.9% 46.1%;
-    --accent: 195 69% 71%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 225 73% 57%; /* Royal Blue */
+    --accent-foreground: 0 0% 100%; /* White text on royal blue */
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
     --border: 220 13% 91%;
     --input: 220 13% 91%;
-    --ring: 226 76% 58%;
-    --chart-1: 226 76% 58%;
-    --chart-2: 195 69% 71%;
+    --ring: 225 73% 57%; /* Royal Blue for rings */
+    --chart-1: 197 71% 73%;
+    --chart-2: 225 73% 57%;
     --chart-3: 210 40% 96.1%;
     --chart-4: 20 95% 50%;
     --chart-5: 170 80% 40%;
@@ -41,21 +41,21 @@ body {
     --card-foreground: 210 40% 98%;
     --popover: 222 84% 5%;
     --popover-foreground: 210 40% 98%;
-    --primary: 195 69% 71%;
+    --primary: 197 71% 73%; /* Sky Blue */
     --primary-foreground: 222 84% 5%;
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
+    --accent: 225 73% 57%; /* Royal Blue */
     --accent-foreground: 210 40% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
-    --ring: 195 69% 71%;
-    --chart-1: 195 69% 71%;
-    --chart-2: 226 76% 58%;
+    --ring: 197 71% 73%;
+    --chart-1: 197 71% 73%;
+    --chart-2: 225 73% 57%;
     --chart-3: 210 40% 96.1%;
     --chart-4: 20 95% 50%;
     --chart-5: 170 80% 40%;
@@ -75,15 +75,15 @@ body {
     transition: all 0.2s ease-in-out;
 }
 .sidebar-link:hover, .sidebar-link.active {
-    @apply bg-primary/10 text-primary;
+    @apply bg-primary/20 text-primary-foreground;
     transform: translateX(4px);
 }
 
-.stat-card {
+.stat-card, .interactive-card {
     transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 }
-.stat-card:hover {
-    transform: translateY(-5px);
+.stat-card:hover, .interactive-card:hover {
+    transform: translateY(-5px) scale(1.02);
     box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
 }
 
@@ -93,4 +93,16 @@ body {
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes drive {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(calc(100vw - 100%));
+  }
+}
+.car-loader {
+  animation: drive 3s ease-in-out infinite;
 }

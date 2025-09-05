@@ -24,7 +24,7 @@ export default function CustomersPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {customers.map(c => (
-                    <Card key={c.id} className="flex flex-col">
+                    <Card key={c.id} className="flex flex-col interactive-card">
                         <CardHeader className="items-center text-center">
                             <Avatar className="w-24 h-24 mb-4">
                                 <AvatarImage src={c.avatar} alt={c.name} />
