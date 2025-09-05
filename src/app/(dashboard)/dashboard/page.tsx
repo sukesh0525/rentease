@@ -1,7 +1,7 @@
 
 import { StatCard } from "@/components/dashboard/stat-card";
 import { Car, DollarSign, Gauge, Users, Wrench } from "lucide-react";
-import { bookings, customers, vehicles } from "@/lib/data";
+import { bookings, customers, vehicles } from "@/lib/storage";
 import { DashboardClientContent } from "@/components/dashboard/dashboard-client-content";
 import { Header } from "@/components/layout/header";
 

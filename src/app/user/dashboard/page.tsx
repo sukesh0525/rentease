@@ -2,7 +2,7 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import { bookings, customers, type Customer, vehicles } from '@/lib/data';
+import { bookings, customers, type Customer, vehicles } from '@/lib/storage';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { User, Star, Wallet, CalendarCheck } from 'lucide-react';

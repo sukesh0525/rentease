@@ -2,7 +2,7 @@
 "use client";
 
 import { useState } from "react";
-import { vehicles, type Vehicle } from "@/lib/data";
+import { vehicles, updateVehicles, type Vehicle } from "@/lib/storage";
 import { VehicleCard } from "@/components/vehicles/vehicle-card";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -13,6 +13,7 @@ import { AdminVehicleDetailsDialog } from "@/components/vehicles/admin-vehicle-d
 import { useToast } from "@/hooks/use-toast";
 
 export default function VehiclesPage() {
+  const [vehicleList, setVehicleList] = useState<Vehicle[]>(vehicles);
   const [vehicleToEdit, setVehicleToEdit] = useState<Vehicle | null>(null);
   const { toast } = useToast();
 
@@ -25,10 +26,12 @@ export default function VehiclesPage() {
   };
 
   const handleSaveChanges = (updatedVehicle: Vehicle) => {
-    const vehicleIndex = vehicles.findIndex(v => v.id === updatedVehicle.id);
-    if (vehicleIndex !== -1) {
-        vehicles[vehicleIndex] = updatedVehicle;
-    }
+    const updatedVehicles = vehicleList.map(v => 
+        v.id === updatedVehicle.id ? updatedVehicle : v
+    );
+    updateVehicles(updatedVehicles);
+    setVehicleList(updatedVehicles);
+
     toast({
         title: "Vehicle Updated",
         description: `${updatedVehicle.brand} ${updatedVehicle.name} has been successfully updated.`,
@@ -80,7 +83,7 @@ export default function VehiclesPage() {
       </Card>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {vehicles.map((vehicle) => (
+        {vehicleList.map((vehicle) => (
           <VehicleCard key={vehicle.id} vehicle={vehicle} onViewDetails={handleViewDetails} />
         ))}
       </div>

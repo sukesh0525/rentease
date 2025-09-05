@@ -1,11 +1,10 @@
 
-import { customers } from "@/lib/data";
+import { customers } from "@/lib/storage";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { StatCard } from "@/components/dashboard/stat-card";
 import { Briefcase, Users, Wallet, Star } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function CustomersPage() {
     const totalCustomers = customers.length;

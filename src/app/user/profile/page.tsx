@@ -2,7 +2,7 @@
 "use client";
 
 import { useEffect, useState, useRef } from 'react';
-import { customers, type Customer, vehicles, bookings } from '@/lib/data';
+import { customers, type Customer, vehicles, bookings } from '@/lib/storage';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';

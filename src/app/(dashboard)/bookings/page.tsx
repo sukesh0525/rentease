@@ -1,7 +1,7 @@
 
 "use client";
 
-import { bookings, customers, vehicles } from "@/lib/data";
+import { bookings, customers, vehicles, updateBookings } from "@/lib/storage";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -28,12 +28,11 @@ export default function BookingsPage() {
     const avgBookingValue = totalRevenue > 0 ? totalRevenue / totalBookings : 0;
 
     const handleBookingAction = (bookingId: string, newStatus: 'Confirmed' | 'Cancelled') => {
-        const bookingIndex = bookings.findIndex(b => b.id === bookingId);
-        if (bookingIndex !== -1) {
-            bookings[bookingIndex].status = newStatus;
-        }
-
-        setCurrentBookings([...bookings]);
+        const updatedBookings = currentBookings.map(b => 
+            b.id === bookingId ? { ...b, status: newStatus } : b
+        );
+        updateBookings(updatedBookings);
+        setCurrentBookings(updatedBookings);
         
         toast({
             title: `Booking ${newStatus}`,

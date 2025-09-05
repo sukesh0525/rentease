@@ -1,7 +1,7 @@
 
 "use client";
 
-import { vehicles, type Vehicle } from "@/lib/data";
+import { vehicles, type Vehicle } from "@/lib/storage";
 import { VehicleCard } from "@/components/vehicles/vehicle-card";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";

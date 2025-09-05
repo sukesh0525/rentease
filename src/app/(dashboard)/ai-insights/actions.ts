@@ -1,6 +1,7 @@
+
 "use server";
 import { generateAiRentalInsights, type GenerateAiRentalInsightsInput } from '@/ai/flows/generate-ai-rental-insights';
-import { bookings, customers, vehicles } from '@/lib/data';
+import { bookings, customers, vehicles } from '@/lib/storage';
 
 // This function is a server action that can be called from client components.
 export async function getAiInsights() {

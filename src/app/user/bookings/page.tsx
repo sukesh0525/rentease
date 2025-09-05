@@ -2,7 +2,7 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import { bookings, customers, vehicles } from "@/lib/data";
+import { bookings, customers, vehicles, updateBookings, updateCustomers } from "@/lib/storage";
 import type { Booking, Customer } from "@/lib/data";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -43,25 +43,21 @@ export default function UserBookingsPage() {
     }, []);
 
     const handlePayment = (bookingId: string) => {
-        // Find the booking in the global state and update it
-        const bookingIndex = bookings.findIndex(b => b.id === bookingId);
-        if (bookingIndex !== -1) {
-            const booking = bookings[bookingIndex];
-            booking.payment = 'Paid';
-
-            // Find the customer and update their total spent
-            if(user) {
-                const customerIndex = customers.findIndex(c => c.id === user.id);
-                if (customerIndex !== -1) {
-                    customers[customerIndex].totalSpent += booking.amount;
-                }
-            }
+        // Update booking payment status
+        const updatedBookings = bookings.map(b =>
+            b.id === bookingId ? { ...b, payment: 'Paid' as const } : b
+        );
+        updateBookings(updatedBookings);
+        setUserBookings(prev => prev.map(b => b.id === bookingId ? { ...b, payment: 'Paid' as const } : b));
+        
+        // Update customer's total spent
+        const booking = bookings.find(b => b.id === bookingId);
+        if (booking && user) {
+            const updatedCustomers = customers.map(c => 
+                c.id === user.id ? { ...c, totalSpent: c.totalSpent + booking.amount } : c
+            );
+            updateCustomers(updatedCustomers);
         }
-
-        // Update the local component state to trigger a re-render
-        setUserBookings(prevBookings => prevBookings.map(b => 
-            b.id === bookingId ? { ...b, payment: 'Paid' } : b
-        ));
 
         toast({
             title: "Payment Successful!",

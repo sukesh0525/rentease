@@ -18,7 +18,7 @@ import { Label } from "@/components/ui/label";
 import type { Vehicle } from "@/lib/data";
 import { Calendar as CalendarIcon, Wallet } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { customers, bookings } from "@/lib/data";
+import { customers, bookings, updateBookings } from "@/lib/storage";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 
@@ -89,8 +89,7 @@ export function BookingDialog({ vehicle, isOpen, onClose }: BookingDialogProps) 
             payment: 'Pending' as const,
         };
 
-        // In a real app, this would be an API call
-        bookings.push(newBooking);
+        updateBookings([...bookings, newBooking]);
 
         toast({
             title: 'Booking Request Sent!',

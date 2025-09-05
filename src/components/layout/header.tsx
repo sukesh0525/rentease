@@ -14,7 +14,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuGroup,
 } from '@/components/ui/dropdown-menu';
-import { bookings, customers, vehicles } from '@/lib/data';
+import { bookings, customers, vehicles, updateBookings } from '@/lib/storage';
 import { useToast } from '@/hooks/use-toast';
 import { useState, useEffect } from 'react';
 import type { Booking, Customer, Vehicle } from '@/lib/data';
@@ -55,16 +55,13 @@ export function Header({ title }: HeaderProps) {
   }, []);
 
   const handleBookingAction = (bookingId: string, newStatus: 'Confirmed' | 'Cancelled') => {
-      const bookingIndex = bookings.findIndex(b => b.id === bookingId);
-      if (bookingIndex !== -1) {
-          bookings[bookingIndex].status = newStatus;
-          toast({
-              title: `Booking ${newStatus}`,
-              description: `The booking request ${bookingId} has been ${newStatus.toLowerCase()}.`,
-          });
-          // Force a re-render by updating the state
-          setPendingBookings(current => current.filter(b => b.id !== bookingId));
-      }
+      const updatedBookings = bookings.map(b => b.id === bookingId ? {...b, status: newStatus} : b);
+      updateBookings(updatedBookings);
+      setPendingBookings(current => current.filter(b => b.id !== bookingId));
+      toast({
+          title: `Booking ${newStatus}`,
+          description: `The booking request ${bookingId} has been ${newStatus.toLowerCase()}.`,
+      });
   };
 
 

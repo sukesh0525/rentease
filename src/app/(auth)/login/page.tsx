@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
-import { customers } from '@/lib/data';
+import { customers } from '@/lib/storage';
 import { useState } from 'react';
 import { Car, ShieldCheck, Tag, Users } from 'lucide-react';
 
