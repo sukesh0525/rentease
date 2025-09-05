@@ -46,7 +46,7 @@ export interface Booking {
 }
 
 export const vehicles: Vehicle[] = [
-    { id: 1, name: 'Swift', brand: 'Maruti Suzuki', type: 'Hatchback', year: 2023, status: 'Available', pricePerDay: 1500, image: 'https://picsum.photos/600/400?random=1', aiHint: 'Maruti Swift', color: 'Red', plate: 'AP-01-AB-1234', seats: 5, mileage: '22 km/l' },
+    { id: 1, name: 'Swift', brand: 'Maruti Suzuki', type: 'Hatchback', year: 2023, status: 'Available', pricePerDay: 1500, image: 'https://storage.googleapis.com/maker-studio-project-files-prod/user-maker-studio-7593c6f4-c292-4417-be2b-2339585a08eb/temp/image-8bb0b1a0-384c-4734-9721-c46b5a3bd960.jpeg', aiHint: 'Maruti Swift', color: 'Red', plate: 'AP-01-AB-1234', seats: 5, mileage: '22 km/l' },
     { id: 2, name: 'Nexon', brand: 'Tata', type: 'SUV', year: 2023, status: 'Available', pricePerDay: 2200, image: 'https://picsum.photos/600/400?random=2', aiHint: 'Tata Nexon', color: 'Blue', plate: 'AP-02-CD-5678', seats: 5, mileage: '17 km/l' },
     { id: 3, name: 'City', brand: 'Honda', type: 'Sedan', year: 2024, status: 'Rented', pricePerDay: 2000, image: 'https://picsum.photos/600/400?random=3', aiHint: 'Honda City', color: 'Silver', plate: 'AP-03-EF-9012', seats: 5, mileage: '18 km/l' },
     { id: 4, name: 'Pulsar NS200', brand: 'Bajaj', type: 'Motorcycle', year: 2023, status: 'Available', pricePerDay: 800, image: 'https://picsum.photos/600/400?random=4', aiHint: 'Bajaj Pulsar', color: 'Black', plate: 'AP-04-GH-3456', seats: 2, mileage: '35 km/l' },
