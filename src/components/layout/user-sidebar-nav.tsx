@@ -8,7 +8,6 @@ import {
   LayoutGrid,
   User,
   History,
-  MapPin
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -16,7 +15,6 @@ const navItems = [
   { href: '/user/dashboard', label: 'Dashboard', icon: LayoutGrid },
   { href: '/user/vehicles', label: 'Available Vehicles', icon: Car },
   { href: '/user/bookings', label: 'My Bookings', icon: History },
-  { href: '/user/tracking', label: 'Vehicle Tracking', icon: MapPin },
   { href: '/user/profile', label: 'My Profile', icon: User },
 ];
 

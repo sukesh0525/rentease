@@ -9,6 +9,7 @@ import {
   CalendarDays,
   LayoutGrid,
   Users,
+  MapPin,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -17,6 +18,7 @@ const navItems = [
   { href: '/vehicles', label: 'Vehicles', icon: Car },
   { href: '/bookings', label: 'Bookings', icon: CalendarDays },
   { href: '/customers', label: 'Customers', icon: Users },
+  { href: '/tracking', label: 'Vehicle Tracking', icon: MapPin },
   { href: '/reports', label: 'Reports', icon: BarChart3 },
   { href: '/ai-insights', label: 'AI Insights', icon: BrainCircuit },
 ];
