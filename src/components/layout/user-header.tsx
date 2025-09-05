@@ -41,14 +41,13 @@ export function UserHeader() {
   };
 
   return (
-     <header className="flex h-16 items-center justify-between border-b bg-card px-6 shrink-0">
-        <div /> 
+     <header className="flex h-16 items-center justify-end border-b bg-card px-6 shrink-0">
         <div className="flex items-center gap-4">
             <DropdownMenu>
             <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-10 w-10 rounded-full">
                     <Avatar className="h-10 w-10">
-                        <AvatarImage src={avatarPreview || ''} alt={user?.name} />
+                        <AvatarImage src={avatarPreview || ''} alt={user?.name || ''} />
                         <AvatarFallback>{user?.name?.charAt(0)}</AvatarFallback>
                     </Avatar>
                 </Button>
