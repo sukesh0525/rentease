@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -17,6 +17,7 @@ import Image from "next/image";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import { Edit } from "lucide-react";
 
 interface AdminVehicleDetailsDialogProps {
   vehicle: Vehicle;
@@ -27,9 +28,13 @@ interface AdminVehicleDetailsDialogProps {
 
 export function AdminVehicleDetailsDialog({ vehicle, isOpen, onClose, onSave }: AdminVehicleDetailsDialogProps) {
   const [editedVehicle, setEditedVehicle] = useState<Vehicle>(vehicle);
+  const [imagePreview, setImagePreview] = useState<string>(vehicle.image);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
 
   useEffect(() => {
     setEditedVehicle(vehicle);
+    setImagePreview(vehicle.image);
   }, [vehicle]);
 
   if (!vehicle) return null;
@@ -47,6 +52,19 @@ export function AdminVehicleDetailsDialog({ vehicle, isOpen, onClose, onSave }: 
     onSave(editedVehicle);
   };
 
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            const result = reader.result as string;
+            setImagePreview(result);
+            setEditedVehicle(prev => ({...prev, image: result}));
+        };
+        reader.readAsDataURL(file);
+    }
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-3xl">
@@ -58,14 +76,32 @@ export function AdminVehicleDetailsDialog({ vehicle, isOpen, onClose, onSave }: 
         </DialogHeader>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 py-4">
             <div className="space-y-4">
-                 <Image 
-                    src={vehicle.image} 
-                    alt={`${vehicle.brand} ${vehicle.name}`} 
-                    width={800} 
-                    height={600}
-                    data-ai-hint={vehicle.aiHint} 
-                    className="rounded-lg object-cover w-full h-auto shadow-lg"
-                />
+                <div className="relative">
+                     <Image 
+                        src={imagePreview} 
+                        alt={`${vehicle.brand} ${vehicle.name}`} 
+                        width={800} 
+                        height={600}
+                        data-ai-hint={vehicle.aiHint} 
+                        className="rounded-lg object-cover w-full h-auto shadow-lg"
+                    />
+                    <Button 
+                        variant="outline" 
+                        size="icon" 
+                        className="absolute bottom-2 right-2 rounded-full bg-background/70 hover:bg-background"
+                        onClick={() => fileInputRef.current?.click()}
+                    >
+                        <Edit className="h-4 w-4"/>
+                        <span className="sr-only">Edit photo</span>
+                    </Button>
+                    <Input 
+                        type="file" 
+                        ref={fileInputRef} 
+                        className="hidden" 
+                        accept="image/*"
+                        onChange={handleImageChange}
+                    />
+                </div>
             </div>
             <div className="space-y-4">
                 <h4 className="font-semibold text-lg border-b pb-2">Vehicle Specifications</h4>
@@ -117,7 +153,7 @@ export function AdminVehicleDetailsDialog({ vehicle, isOpen, onClose, onSave }: 
                 <h4 className="font-semibold text-lg border-b pb-2 pt-4">Pricing & Status</h4>
                  <div className="grid grid-cols-2 gap-4">
                     <div>
-                        <Label htmlFor="pricePerDay">Price Per Day (₹)</Label>
+                        <Label htmlFor="pricePerDay">Price Per Day (Rs.)</Label>
                         <Input id="pricePerDay" type="number" value={editedVehicle.pricePerDay} onChange={handleInputChange} />
                     </div>
                     <div>
