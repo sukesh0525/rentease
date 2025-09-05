@@ -1,22 +1,26 @@
 
 "use client";
 
-import { vehicles, type Vehicle } from "@/lib/storage";
+import { vehicles, type Vehicle, syncData } from "@/lib/storage";
 import { VehicleCard } from "@/components/vehicles/vehicle-card";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Header } from "@/components/layout/header";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { BookingDialog } from "@/components/vehicles/booking-dialog";
 import { VehicleDetailsDialog } from "@/components/vehicles/vehicle-details-dialog";
 
 export default function UserVehiclesPage() {
   const [vehicleToBook, setVehicleToBook] = useState<Vehicle | null>(null);
   const [vehicleToView, setVehicleToView] = useState<Vehicle | null>(null);
+  const [availableVehicles, setAvailableVehicles] = useState<Vehicle[]>([]);
 
-  const availableVehicles = vehicles.filter(v => v.status === 'Available');
+  useEffect(() => {
+    syncData();
+    setAvailableVehicles(vehicles.filter(v => v.status === 'Available'));
+  }, []);
 
   const handleViewDetails = (vehicle: Vehicle) => {
     setVehicleToView(vehicle);

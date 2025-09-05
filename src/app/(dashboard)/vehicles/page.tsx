@@ -1,8 +1,8 @@
 
 "use client";
 
-import { useState } from "react";
-import { vehicles, updateVehicles, type Vehicle } from "@/lib/storage";
+import { useState, useEffect } from "react";
+import { vehicles, updateVehicles, type Vehicle, syncData } from "@/lib/storage";
 import { VehicleCard } from "@/components/vehicles/vehicle-card";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -13,9 +13,14 @@ import { AdminVehicleDetailsDialog } from "@/components/vehicles/admin-vehicle-d
 import { useToast } from "@/hooks/use-toast";
 
 export default function VehiclesPage() {
-  const [vehicleList, setVehicleList] = useState<Vehicle[]>(vehicles);
+  const [vehicleList, setVehicleList] = useState<Vehicle[]>([]);
   const [vehicleToEdit, setVehicleToEdit] = useState<Vehicle | null>(null);
   const { toast } = useToast();
+
+  useEffect(() => {
+    syncData();
+    setVehicleList(vehicles);
+  }, []);
 
   const handleViewDetails = (vehicle: Vehicle) => {
     setVehicleToEdit(vehicle);

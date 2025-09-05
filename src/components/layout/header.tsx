@@ -14,7 +14,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuGroup,
 } from '@/components/ui/dropdown-menu';
-import { bookings, customers, vehicles, updateBookings } from '@/lib/storage';
+import { bookings, customers, vehicles, updateBookings, syncData } from '@/lib/storage';
 import { useToast } from '@/hooks/use-toast';
 import { useState, useEffect } from 'react';
 import type { Booking, Customer, Vehicle } from '@/lib/data';
@@ -36,6 +36,7 @@ export function Header({ title }: HeaderProps) {
   const [pendingBookings, setPendingBookings] = useState<PendingBooking[]>([]);
 
   useEffect(() => {
+    syncData();
     const updatePendingBookings = () => {
         const pending = bookings
         .filter(b => b.status === 'Pending')
