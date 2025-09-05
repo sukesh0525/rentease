@@ -1,25 +1,19 @@
 
 "use client";
 
-import { bookings, customers, vehicles, updateBookings, syncData } from "@/lib/storage";
+import { bookings, customers, vehicles, updateBookings } from "@/lib/storage";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { getPaymentBadge, getStatusBadge } from "@/lib/utils.tsx";
 import { StatCard } from "@/components/dashboard/stat-card";
 import { Book, CalendarCheck, Check, DollarSign, Wallet, X } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import type { Booking } from "@/lib/data";
 
 export default function BookingsPage() {
     const { toast } = useToast();
-    const [currentBookings, setCurrentBookings] = useState<Booking[]>([]);
-
-    useEffect(() => {
-        syncData();
-        setCurrentBookings(bookings);
-    }, []);
+    const [currentBookings, setCurrentBookings] = useState(bookings);
 
     const bookingDetails = currentBookings.map(b => {
         const customer = customers.find(c => c.id === b.customerId);

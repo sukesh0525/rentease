@@ -14,7 +14,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuGroup,
 } from '@/components/ui/dropdown-menu';
-import { bookings, customers, vehicles, updateBookings, syncData } from '@/lib/storage';
+import { bookings, customers, vehicles, updateBookings } from '@/lib/storage';
 import { useToast } from '@/hooks/use-toast';
 import { useState, useEffect } from 'react';
 import type { Booking, Customer, Vehicle } from '@/lib/data';
@@ -36,24 +36,15 @@ export function Header({ title }: HeaderProps) {
   const [pendingBookings, setPendingBookings] = useState<PendingBooking[]>([]);
 
   useEffect(() => {
-    syncData();
-    const updatePendingBookings = () => {
-        const pending = bookings
-        .filter(b => b.status === 'Pending')
-        .map(b => ({
-            ...b,
-            customer: customers.find(c => c.id === b.customerId),
-            vehicle: vehicles.find(v => v.id === b.vehicleId),
-        }));
-      setPendingBookings(pending);
-    }
-    updatePendingBookings();
-
-    // This is a simple way to keep the list updated. In a real app, you'd use a more robust
-    // state management solution or server-sent events.
-    const interval = setInterval(updatePendingBookings, 2000); 
-    return () => clearInterval(interval);
-  }, []);
+    const pending = bookings
+      .filter(b => b.status === 'Pending')
+      .map(b => ({
+          ...b,
+          customer: customers.find(c => c.id === b.customerId),
+          vehicle: vehicles.find(v => v.id === b.vehicleId),
+      }));
+    setPendingBookings(pending);
+  }, []); // This might become stale, but it's what was there before the fix
 
   const handleBookingAction = (bookingId: string, newStatus: 'Confirmed' | 'Cancelled') => {
       const updatedBookings = bookings.map(b => b.id === bookingId ? {...b, status: newStatus} : b);

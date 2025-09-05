@@ -24,37 +24,25 @@ function getInitialData<T>(key: string, initialData: T[]): T[] {
 
 
 // Initialize data
-export let vehicles: Vehicle[] = getInitialData('vehicles', initialVehicles);
-export let customers: Customer[] = getInitialData('customers', initialCustomers);
-export let bookings: Booking[] = getInitialData('bookings', initialBookings);
+export const vehicles: Vehicle[] = getInitialData('vehicles', initialVehicles);
+export const customers: Customer[] = getInitialData('customers', initialCustomers);
+export const bookings: Booking[] = getInitialData('bookings', initialBookings);
 
 // Functions to update data and persist to localStorage
 export function updateVehicles(newVehicles: Vehicle[]) {
-    vehicles = newVehicles;
     if (isBrowser) {
-        localStorage.setItem('vehicles', JSON.stringify(vehicles));
+        localStorage.setItem('vehicles', JSON.stringify(newVehicles));
     }
 }
 
 export function updateCustomers(newCustomers: Customer[]) {
-    customers = newCustomers;
     if (isBrowser) {
-        localStorage.setItem('customers', JSON.stringify(customers));
+        localStorage.setItem('customers', JSON.stringify(newCustomers));
     }
 }
 
 export function updateBookings(newBookings: Booking[]) {
-    bookings = newBookings;
     if (isBrowser) {
-        localStorage.setItem('bookings', JSON.stringify(bookings));
-    }
-}
-
-// Re-sync function to be called on state changes in components
-export function syncData() {
-    if (isBrowser) {
-        vehicles = getInitialData('vehicles', initialVehicles);
-        customers = getInitialData('customers', initialCustomers);
-        bookings = getInitialData('bookings', initialBookings);
+        localStorage.setItem('bookings', JSON.stringify(newBookings));
     }
 }
