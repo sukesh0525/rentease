@@ -46,7 +46,16 @@ export default function UserBookingsPage() {
         // Find the booking in the global state and update it
         const bookingIndex = bookings.findIndex(b => b.id === bookingId);
         if (bookingIndex !== -1) {
-            bookings[bookingIndex].payment = 'Paid';
+            const booking = bookings[bookingIndex];
+            booking.payment = 'Paid';
+
+            // Find the customer and update their total spent
+            if(user) {
+                const customerIndex = customers.findIndex(c => c.id === user.id);
+                if (customerIndex !== -1) {
+                    customers[customerIndex].totalSpent += booking.amount;
+                }
+            }
         }
 
         // Update the local component state to trigger a re-render
