@@ -2,7 +2,7 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import { bookings, customers, vehicles, updateBookings, updateCustomers } from "@/lib/storage";
+import { bookings, customers, vehicles } from "@/lib/data";
 import type { Booking, Customer } from "@/lib/data";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -44,19 +44,15 @@ export default function UserBookingsPage() {
 
     const handlePayment = (bookingId: string) => {
         // Update booking payment status
-        const updatedBookings = bookings.map(b =>
-            b.id === bookingId ? { ...b, payment: 'Paid' as const } : b
-        );
-        updateBookings(updatedBookings);
+        const booking = bookings.find(b => b.id === bookingId);
+        if (booking) {
+            booking.payment = 'Paid';
+        }
         setUserBookings(prev => prev.map(b => b.id === bookingId ? { ...b, payment: 'Paid' as const } : b));
         
         // Update customer's total spent
-        const booking = bookings.find(b => b.id === bookingId);
         if (booking && user) {
-            const updatedCustomers = customers.map(c => 
-                c.id === user.id ? { ...c, totalSpent: c.totalSpent + booking.amount } : c
-            );
-            updateCustomers(updatedCustomers);
+            user.totalSpent += booking.amount;
         }
 
         toast({

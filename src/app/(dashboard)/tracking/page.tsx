@@ -1,7 +1,7 @@
 
 "use client";
 
-import { bookings, customers, vehicles } from "@/lib/storage";
+import { bookings, customers, vehicles } from "@/lib/data";
 import type { Booking, Customer, Vehicle } from "@/lib/data";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';

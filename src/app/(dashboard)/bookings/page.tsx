@@ -1,7 +1,7 @@
 
 "use client";
 
-import { bookings, customers, vehicles, updateBookings } from "@/lib/storage";
+import { bookings, customers, vehicles } from "@/lib/data";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -30,7 +30,6 @@ export default function BookingsPage() {
         const updatedBookings = currentBookings.map(b => 
             b.id === bookingId ? { ...b, status: newStatus } : b
         );
-        updateBookings(updatedBookings);
         setCurrentBookings(updatedBookings);
         
         toast({

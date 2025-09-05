@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { customers, updateCustomers } from '@/lib/storage';
+import { customers } from '@/lib/data';
 
 export default function SignupPage() {
   const router = useRouter();
@@ -49,7 +49,7 @@ export default function SignupPage() {
         avatar: `https://i.pravatar.cc/150?u=${email}`
     };
     
-    updateCustomers([...customers, newUser]);
+    customers.push(newUser);
 
     // Simulate login by storing email
     localStorage.setItem('loggedInUserEmail', newUser.email);

@@ -15,7 +15,7 @@ import { Button } from '../ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { useEffect, useState } from 'react';
 import type { Customer } from '@/lib/data';
-import { customers } from '@/lib/storage';
+import { customers } from '@/lib/data';
 import { ModeToggle } from '../mode-toggle';
 
 export function UserHeader() {

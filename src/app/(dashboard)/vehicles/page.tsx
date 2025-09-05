@@ -2,7 +2,7 @@
 "use client";
 
 import { useState } from "react";
-import { vehicles, updateVehicles, type Vehicle } from "@/lib/storage";
+import { vehicles, type Vehicle } from "@/lib/data";
 import { VehicleCard } from "@/components/vehicles/vehicle-card";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -29,7 +29,6 @@ export default function VehiclesPage() {
     const updatedVehicles = vehicleList.map(v => 
         v.id === updatedVehicle.id ? updatedVehicle : v
     );
-    updateVehicles(updatedVehicles);
     setVehicleList(updatedVehicles);
 
     toast({

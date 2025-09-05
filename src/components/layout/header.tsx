@@ -14,7 +14,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuGroup,
 } from '@/components/ui/dropdown-menu';
-import { bookings, customers, vehicles, updateBookings } from '@/lib/storage';
+import { bookings, customers, vehicles } from '@/lib/data';
 import { useToast } from '@/hooks/use-toast';
 import { useState, useEffect } from 'react';
 import type { Booking, Customer, Vehicle } from '@/lib/data';
@@ -44,11 +44,13 @@ export function Header({ title }: HeaderProps) {
           vehicle: vehicles.find(v => v.id === b.vehicleId),
       }));
     setPendingBookings(pending);
-  }, []); // This might become stale, but it's what was there before the fix
+  }, []);
 
   const handleBookingAction = (bookingId: string, newStatus: 'Confirmed' | 'Cancelled') => {
-      const updatedBookings = bookings.map(b => b.id === bookingId ? {...b, status: newStatus} : b);
-      updateBookings(updatedBookings);
+      const booking = bookings.find(b => b.id === bookingId);
+      if (booking) {
+          booking.status = newStatus;
+      }
       setPendingBookings(current => current.filter(b => b.id !== bookingId));
       toast({
           title: `Booking ${newStatus}`,
