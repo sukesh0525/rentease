@@ -25,18 +25,14 @@ export default function CustomersPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {customers.map(c => (
                     <Card key={c.id} className="flex flex-col interactive-card">
-                        <CardHeader className="items-center text-center">
-                            <Avatar className="w-24 h-24 mb-4">
-                                <AvatarImage src={c.avatar} alt={c.name} />
-                                <AvatarFallback>{c.name.charAt(0)}</AvatarFallback>
-                            </Avatar>
+                        <CardHeader>
                             <div className="flex items-center justify-between w-full">
                                 <CardTitle className="font-headline text-xl">{c.name}</CardTitle>
                                 {c.type === 'VIP' && <Badge variant="destructive">VIP</Badge>}
                                 {c.type === 'Corporate' && <Badge>Corporate</Badge>}
                             </div>
                         </CardHeader>
-                        <CardContent className="flex-grow space-y-1 text-sm text-muted-foreground text-center">
+                        <CardContent className="flex-grow space-y-1 text-sm text-muted-foreground">
                             <p>{c.email}</p>
                             <p>{c.phone}</p>
                         </CardContent>
