@@ -5,7 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from '@/components/theme-provider';
 
 export const metadata: Metadata = {
-  title: 'RentEase - Vehicle Rental Management',
+  title: 'RideTogether - Vehicle Rental Management',
   description: 'A comprehensive solution for managing vehicle rentals.',
 };
 

@@ -12,7 +12,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
       <aside className="w-64 flex-shrink-0 border-r bg-card">
         <div className="flex h-16 items-center justify-center border-b px-6">
           <Link href="/dashboard" className="flex items-center gap-2">
-            <h1 className="text-3xl font-bold text-primary font-headline">RentEase</h1>
+            <h1 className="text-3xl font-bold text-primary font-headline">RideTogether</h1>
           </Link>
         </div>
         <div className="mt-6">

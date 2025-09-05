@@ -63,50 +63,52 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-primary font-headline">RentEase</h1>
-            <p className="text-muted-foreground">Create an account to start renting.</p>
+    <div className="flex items-center justify-center min-h-screen p-4">
+        <div className="w-full max-w-md">
+            <div className="text-center mb-8">
+                <h1 className="text-4xl font-bold text-primary font-headline">RideTogether</h1>
+                <p className="text-muted-foreground">Create an account to start your journey.</p>
+            </div>
+            <Card>
+                <CardHeader>
+                <CardTitle className="text-2xl font-headline">Sign Up</CardTitle>
+                <CardDescription>Enter your information to create an account.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                <form onSubmit={handleSignup} className="grid gap-4">
+                    <div className="grid gap-2">
+                    <Label htmlFor="full-name">Full Name</Label>
+                    <Input id="full-name" name="full-name" placeholder="John Doe" required />
+                    </div>
+                    <div className="grid gap-2">
+                    <Label htmlFor="email">Email</Label>
+                    <Input id="email" name="email" type="email" placeholder="m@example.com" required />
+                    </div>
+                    <div className="grid gap-2">
+                    <Label htmlFor="phone">Phone Number</Label>
+                    <Input id="phone" name="phone" type="tel" placeholder="+91 98765 43210" required />
+                    </div>
+                    <div className="grid gap-2">
+                    <Label htmlFor="address">Address</Label>
+                    <Textarea id="address" name="address" placeholder="Enter your full address" required />
+                    </div>
+                    <div className="grid gap-2">
+                    <Label htmlFor="password">Password</Label>
+                    <Input id="password" name="password" type="password" required />
+                    </div>
+                    <Button type="submit" className="w-full">
+                    Create an account
+                    </Button>
+                </form>
+                <div className="mt-4 text-center text-sm">
+                    Already have an account?{' '}
+                    <Link href="/login" className="underline">
+                    Login
+                    </Link>
+                </div>
+                </CardContent>
+            </Card>
         </div>
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-2xl font-headline">Sign Up</CardTitle>
-          <CardDescription>Enter your information to create an account.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSignup} className="grid gap-4">
-            <div className="grid gap-2">
-              <Label htmlFor="full-name">Full Name</Label>
-              <Input id="full-name" name="full-name" placeholder="John Doe" required />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
-              <Input id="email" name="email" type="email" placeholder="m@example.com" required />
-            </div>
-             <div className="grid gap-2">
-              <Label htmlFor="phone">Phone Number</Label>
-              <Input id="phone" name="phone" type="tel" placeholder="+91 98765 43210" required />
-            </div>
-             <div className="grid gap-2">
-              <Label htmlFor="address">Address</Label>
-              <Textarea id="address" name="address" placeholder="Enter your full address" required />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="password">Password</Label>
-              <Input id="password" name="password" type="password" required />
-            </div>
-            <Button type="submit" className="w-full">
-              Create an account
-            </Button>
-          </form>
-          <div className="mt-4 text-center text-sm">
-            Already have an account?{' '}
-            <Link href="/login" className="underline">
-              Login
-            </Link>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 }

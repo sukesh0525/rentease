@@ -58,7 +58,7 @@ const insightsPrompt = ai.definePrompt({
   name: 'insightsPrompt',
   input: {schema: GenerateAiRentalInsightsInputSchema},
   output: {schema: GenerateAiRentalInsightsOutputSchema},
-  prompt: `You are a senior business analyst for a vehicle rental company called VehicleRent. Your task is to provide a concise, data-driven summary of the company's performance based on the provided metrics. Structure your analysis into bullet points covering key areas like revenue, fleet performance, and customer trends. Conclude with one or two actionable recommendations.
+  prompt: `You are a senior business analyst for a vehicle rental company called RideTogether. Your task is to provide a concise, data-driven summary of the company's performance based on the provided metrics. Structure your analysis into bullet points covering key areas like revenue, fleet performance, and customer trends. Conclude with one or two actionable recommendations.
 
 Here is the data for the last period:
 - Total Vehicles: {{{totalVehicles}}}
