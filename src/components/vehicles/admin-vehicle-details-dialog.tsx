@@ -66,10 +66,6 @@ export function AdminVehicleDetailsDialog({ vehicle, isOpen, onClose, onSave }: 
                     data-ai-hint={vehicle.aiHint} 
                     className="rounded-lg object-cover w-full h-auto shadow-lg"
                 />
-                <div>
-                    <Label htmlFor="image">Image URL</Label>
-                    <Input id="image" value={editedVehicle.image} onChange={handleInputChange} />
-                </div>
             </div>
             <div className="space-y-4">
                 <h4 className="font-semibold text-lg border-b pb-2">Vehicle Specifications</h4>
