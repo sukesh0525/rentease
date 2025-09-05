@@ -10,18 +10,26 @@ import { Button } from "@/components/ui/button";
 import { Header } from "@/components/layout/header";
 import { useState } from "react";
 import { BookingDialog } from "@/components/vehicles/booking-dialog";
+import { VehicleDetailsDialog } from "@/components/vehicles/vehicle-details-dialog";
 
 export default function UserVehiclesPage() {
-  const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
+  const [vehicleToBook, setVehicleToBook] = useState<Vehicle | null>(null);
+  const [vehicleToView, setVehicleToView] = useState<Vehicle | null>(null);
 
   const availableVehicles = vehicles.filter(v => v.status === 'Available');
 
+  const handleViewDetails = (vehicle: Vehicle) => {
+    setVehicleToView(vehicle);
+  };
+  
   const handleBookNow = (vehicle: Vehicle) => {
-    setSelectedVehicle(vehicle);
+    setVehicleToView(null); // Close details dialog if open
+    setVehicleToBook(vehicle);
   };
 
-  const handleCloseDialog = () => {
-    setSelectedVehicle(null);
+  const handleCloseDialogs = () => {
+    setVehicleToBook(null);
+    setVehicleToView(null);
   };
 
   return (
@@ -58,15 +66,24 @@ export default function UserVehiclesPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {availableVehicles.map((vehicle) => (
-          <VehicleCard key={vehicle.id} vehicle={vehicle} onBookNow={handleBookNow} />
+          <VehicleCard key={vehicle.id} vehicle={vehicle} onViewDetails={handleViewDetails} />
         ))}
       </div>
 
-      {selectedVehicle && (
+      {vehicleToView && (
+        <VehicleDetailsDialog 
+            vehicle={vehicleToView} 
+            isOpen={!!vehicleToView}
+            onClose={handleCloseDialogs}
+            onBookNow={() => handleBookNow(vehicleToView)}
+        />
+      )}
+
+      {vehicleToBook && (
         <BookingDialog 
-            vehicle={selectedVehicle} 
-            isOpen={!!selectedVehicle}
-            onClose={handleCloseDialog}
+            vehicle={vehicleToBook} 
+            isOpen={!!vehicleToBook}
+            onClose={handleCloseDialogs}
         />
       )}
     </div>

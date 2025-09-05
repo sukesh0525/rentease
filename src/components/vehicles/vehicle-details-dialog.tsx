@@ -18,10 +18,17 @@ interface VehicleDetailsDialogProps {
   vehicle: Vehicle;
   isOpen: boolean;
   onClose: () => void;
+  onBookNow?: (vehicle: Vehicle) => void;
 }
 
-export function VehicleDetailsDialog({ vehicle, isOpen, onClose }: VehicleDetailsDialogProps) {
+export function VehicleDetailsDialog({ vehicle, isOpen, onClose, onBookNow }: VehicleDetailsDialogProps) {
   if (!vehicle) return null;
+
+  const handleBookNowClick = () => {
+    if (onBookNow) {
+      onBookNow(vehicle);
+    }
+  }
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -61,10 +68,15 @@ export function VehicleDetailsDialog({ vehicle, isOpen, onClose }: VehicleDetail
                  </div>
             </div>
         </div>
-        <DialogFooter>
+        <DialogFooter className="sm:justify-between">
             <DialogClose asChild>
                 <Button type="button" variant="secondary">Close</Button>
             </DialogClose>
+            {onBookNow && (
+                 <Button onClick={handleBookNowClick} disabled={vehicle.status !== 'Available'}>
+                    Book Now
+                </Button>
+            )}
         </DialogFooter>
       </DialogContent>
     </Dialog>

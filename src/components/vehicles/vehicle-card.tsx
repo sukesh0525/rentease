@@ -14,17 +14,18 @@ interface VehicleCardProps {
 }
 
 export function VehicleCard({ vehicle, onBookNow, onViewDetails }: VehicleCardProps) {
-    const handleBookNowClick = () => {
-        if (onBookNow) {
+    
+    // Admin dashboard uses onViewDetails, User side now also uses onViewDetails
+    const handlePrimaryAction = () => {
+        if (onViewDetails) {
+            onViewDetails(vehicle);
+        } else if (onBookNow) {
+            // Fallback for original user flow if needed
             onBookNow(vehicle);
         }
     }
 
-    const handleViewDetailsClick = () => {
-        if (onViewDetails) {
-            onViewDetails(vehicle);
-        }
-    }
+    const buttonText = onBookNow ? "Book Now" : "View Details";
 
     return (
         <Card className="overflow-hidden interactive-card flex flex-col">
@@ -55,15 +56,9 @@ export function VehicleCard({ vehicle, onBookNow, onViewDetails }: VehicleCardPr
             </CardContent>
             <CardFooter className="bg-muted/50 p-4 flex justify-between items-center">
                 <p className="text-lg font-semibold">₹{vehicle.pricePerDay.toLocaleString()}<span className="text-sm font-normal text-muted-foreground">/day</span></p>
-                {onBookNow && (
-                    <Button onClick={handleBookNowClick} disabled={vehicle.status !== 'Available'}>Book Now</Button>
-                )}
-                {onViewDetails && (
-                     <Button onClick={handleViewDetailsClick}>View Details</Button>
-                )}
-                 {!onBookNow && !onViewDetails && (
-                    <Button disabled={vehicle.status !== 'Available'}>View Details</Button>
-                )}
+                 <Button onClick={handlePrimaryAction} disabled={onBookNow && vehicle.status !== 'Available'}>
+                    {buttonText}
+                 </Button>
             </CardFooter>
         </Card>
     );
