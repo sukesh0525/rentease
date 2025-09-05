@@ -10,14 +10,22 @@ import { Button } from "../ui/button";
 interface VehicleCardProps {
     vehicle: Vehicle;
     onBookNow?: (vehicle: Vehicle) => void;
+    onViewDetails?: (vehicle: Vehicle) => void;
 }
 
-export function VehicleCard({ vehicle, onBookNow }: VehicleCardProps) {
+export function VehicleCard({ vehicle, onBookNow, onViewDetails }: VehicleCardProps) {
     const handleBookNowClick = () => {
         if (onBookNow) {
             onBookNow(vehicle);
         }
     }
+
+    const handleViewDetailsClick = () => {
+        if (onViewDetails) {
+            onViewDetails(vehicle);
+        }
+    }
+
     return (
         <Card className="overflow-hidden interactive-card flex flex-col">
             <CardHeader className="p-0">
@@ -47,9 +55,13 @@ export function VehicleCard({ vehicle, onBookNow }: VehicleCardProps) {
             </CardContent>
             <CardFooter className="bg-muted/50 p-4 flex justify-between items-center">
                 <p className="text-lg font-semibold">₹{vehicle.pricePerDay.toLocaleString()}<span className="text-sm font-normal text-muted-foreground">/day</span></p>
-                {onBookNow ? (
+                {onBookNow && (
                     <Button onClick={handleBookNowClick} disabled={vehicle.status !== 'Available'}>Book Now</Button>
-                ) : (
+                )}
+                {onViewDetails && (
+                     <Button onClick={handleViewDetailsClick}>View Details</Button>
+                )}
+                 {!onBookNow && !onViewDetails && (
                     <Button disabled={vehicle.status !== 'Available'}>View Details</Button>
                 )}
             </CardFooter>
