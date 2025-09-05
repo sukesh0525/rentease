@@ -9,22 +9,16 @@ import { Button } from "../ui/button";
 
 interface VehicleCardProps {
     vehicle: Vehicle;
-    onBookNow?: (vehicle: Vehicle) => void;
-    onViewDetails?: (vehicle: Vehicle) => void;
+    onViewDetails: (vehicle: Vehicle) => void;
 }
 
-export function VehicleCard({ vehicle, onBookNow, onViewDetails }: VehicleCardProps) {
+export function VehicleCard({ vehicle, onViewDetails }: VehicleCardProps) {
     
     const handlePrimaryAction = () => {
         if (onViewDetails) {
             onViewDetails(vehicle);
-        } else if (onBookNow) {
-            // This is for the user side flow
-            onBookNow(vehicle);
         }
     }
-
-    const buttonText = onBookNow ? "Book Now" : "View Details";
 
     return (
         <Card className="overflow-hidden interactive-card flex flex-col">
@@ -55,8 +49,8 @@ export function VehicleCard({ vehicle, onBookNow, onViewDetails }: VehicleCardPr
             </CardContent>
             <CardFooter className="bg-muted/50 p-4 flex justify-between items-center">
                 <p className="text-lg font-semibold">Rs.{vehicle.pricePerDay.toLocaleString()}<span className="text-sm font-normal text-muted-foreground">/day</span></p>
-                 <Button onClick={handlePrimaryAction} disabled={onBookNow && vehicle.status !== 'Available'}>
-                    {onViewDetails ? 'View Details' : 'Book Now'}
+                 <Button onClick={handlePrimaryAction}>
+                    View Details
                  </Button>
             </CardFooter>
         </Card>
