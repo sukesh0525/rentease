@@ -9,10 +9,32 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
+import { AdminVehicleDetailsDialog } from "@/components/vehicles/admin-vehicle-details-dialog";
+import { useToast } from "@/hooks/use-toast";
 
 export default function VehiclesPage() {
-  // The state for managing the vehicle details dialog has been removed.
-  // The onViewDetails prop is no longer passed to VehicleCard from this page.
+  const [vehicleToEdit, setVehicleToEdit] = useState<Vehicle | null>(null);
+  const { toast } = useToast();
+
+  const handleViewDetails = (vehicle: Vehicle) => {
+    setVehicleToEdit(vehicle);
+  };
+
+  const handleCloseDialog = () => {
+    setVehicleToEdit(null);
+  };
+
+  const handleSaveChanges = (updatedVehicle: Vehicle) => {
+    const vehicleIndex = vehicles.findIndex(v => v.id === updatedVehicle.id);
+    if (vehicleIndex !== -1) {
+        vehicles[vehicleIndex] = updatedVehicle;
+    }
+    toast({
+        title: "Vehicle Updated",
+        description: `${updatedVehicle.brand} ${updatedVehicle.name} has been successfully updated.`,
+    });
+    handleCloseDialog();
+  };
 
   return (
     <div className="fade-in space-y-6">
@@ -59,11 +81,18 @@ export default function VehiclesPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {vehicles.map((vehicle) => (
-          <VehicleCard key={vehicle.id} vehicle={vehicle} />
+          <VehicleCard key={vehicle.id} vehicle={vehicle} onViewDetails={handleViewDetails} />
         ))}
       </div>
 
-       {/* The VehicleDetailsDialog is no longer rendered here */}
+       {vehicleToEdit && (
+         <AdminVehicleDetailsDialog
+            vehicle={vehicleToEdit}
+            isOpen={!!vehicleToEdit}
+            onClose={handleCloseDialog}
+            onSave={handleSaveChanges}
+        />
+       )}
     </div>
   );
 }

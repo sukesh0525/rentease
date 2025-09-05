@@ -15,12 +15,11 @@ interface VehicleCardProps {
 
 export function VehicleCard({ vehicle, onBookNow, onViewDetails }: VehicleCardProps) {
     
-    // Admin dashboard uses onViewDetails, User side now also uses onViewDetails
     const handlePrimaryAction = () => {
         if (onViewDetails) {
             onViewDetails(vehicle);
         } else if (onBookNow) {
-            // Fallback for original user flow if needed
+            // This is for the user side flow
             onBookNow(vehicle);
         }
     }
@@ -57,7 +56,7 @@ export function VehicleCard({ vehicle, onBookNow, onViewDetails }: VehicleCardPr
             <CardFooter className="bg-muted/50 p-4 flex justify-between items-center">
                 <p className="text-lg font-semibold">₹{vehicle.pricePerDay.toLocaleString()}<span className="text-sm font-normal text-muted-foreground">/day</span></p>
                  <Button onClick={handlePrimaryAction} disabled={onBookNow && vehicle.status !== 'Available'}>
-                    {buttonText}
+                    {onViewDetails ? 'View Details' : 'Book Now'}
                  </Button>
             </CardFooter>
         </Card>
