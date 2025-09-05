@@ -135,7 +135,7 @@ export default function UserProfilePage() {
                 <CardContent className="text-center">
                     <div className="grid grid-cols-3 gap-4 text-center w-full border-t pt-4">
                         <div>
-                            <p className="font-bold text-lg">{user.bookingsCount}</p>
+                            <p className="font-bold text-lg">{userBookings.length}</p>
                             <p className="text-xs text-muted-foreground">Bookings</p>
                         </div>
                         <div>

@@ -59,7 +59,7 @@ export default function UserDashboardPage() {
     <div className="fade-in space-y-6">
       <Header title={`Welcome, ${user.name.split(' ')[0]}!`} />
        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <StatCard title="Total Bookings" value={user.bookingsCount.toString()} icon={<CalendarCheck className="h-5 w-5"/>} />
+            <StatCard title="Total Bookings" value={userBookings.length.toString()} icon={<CalendarCheck className="h-5 w-5"/>} />
             <StatCard title="Total Spent" value={`Rs.${user.totalSpent.toLocaleString()}`} icon={<Wallet className="h-5 w-5"/>} />
             <StatCard title="Your Rating" value={user.rating.toString()} icon={<Star className="h-5 w-5"/>} />
             <StatCard title="Member Since" value={new Date(user.memberSince).toLocaleDateString('en-IN', { year: 'numeric', month: 'short' })} icon={<User className="h-5 w-5"/>} />
