@@ -18,7 +18,8 @@ import { bookings, customers, vehicles } from '@/lib/data';
 import { useToast } from '@/hooks/use-toast';
 import { useState, useEffect } from 'react';
 import type { Booking, Customer, Vehicle } from '@/lib/data';
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+import { Avatar, AvatarFallback } from '../ui/avatar';
+import { ModeToggle } from '../mode-toggle';
 
 type HeaderProps = {
   title: string;
@@ -113,6 +114,8 @@ export function Header({ title }: HeaderProps) {
                 </DropdownMenuGroup>
             </DropdownMenuContent>
         </DropdownMenu>
+
+        <ModeToggle />
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

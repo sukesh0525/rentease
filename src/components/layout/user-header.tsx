@@ -16,6 +16,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { useEffect, useState } from 'react';
 import type { Customer } from '@/lib/data';
 import { customers } from '@/lib/data';
+import { ModeToggle } from '../mode-toggle';
 
 export function UserHeader() {
   const router = useRouter();
@@ -43,6 +44,7 @@ export function UserHeader() {
   return (
      <header className="flex h-16 items-center justify-end border-b bg-card px-6 shrink-0">
         <div className="flex items-center gap-4">
+            <ModeToggle />
             <DropdownMenu>
             <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-10 w-10 rounded-full">
