@@ -139,7 +139,7 @@ export default function UserProfilePage() {
                             <p className="text-xs text-muted-foreground">Bookings</p>
                         </div>
                         <div>
-                            <p className="font-bold text-lg">₹{(user.totalSpent/1000).toFixed(1)}k</p>
+                            <p className="font-bold text-lg">Rs.{(user.totalSpent/1000).toFixed(1)}k</p>
                             <p className="text-xs text-muted-foreground">Total Spent</p>
                         </div>
                         <div>
@@ -197,7 +197,7 @@ export default function UserProfilePage() {
                                 <TableCell>{booking.vehicle?.brand} {booking.vehicle?.name}</TableCell>
                                 <TableCell>{booking.startDate}</TableCell>
                                 <TableCell>{booking.endDate}</TableCell>
-                                <TableCell>₹{booking.amount.toLocaleString()}</TableCell>
+                                <TableCell>Rs.{booking.amount.toLocaleString()}</TableCell>
                                 <TableCell>{getStatusBadge(booking.status)}</TableCell>
                             </TableRow>
                         ))}

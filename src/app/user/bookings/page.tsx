@@ -113,7 +113,7 @@ export default function UserBookingsPage() {
                                 <TableCell className="font-medium">{b.id}</TableCell>
                                 <TableCell>{b.vehicle?.brand} {b.vehicle?.name}</TableCell>
                                 <TableCell>{b.startDate} to {b.endDate}</TableCell>
-                                <TableCell className="font-semibold">₹{b.amount.toLocaleString()}</TableCell>
+                                <TableCell className="font-semibold">Rs.{b.amount.toLocaleString()}</TableCell>
                                 <TableCell>{getStatusBadge(b.status)}</TableCell>
                                 <TableCell>{getPaymentBadge(b.payment)}</TableCell>
                                 <TableCell className="text-center">
@@ -126,7 +126,7 @@ export default function UserBookingsPage() {
                                                 <DialogHeader>
                                                     <DialogTitle>Complete Your Payment</DialogTitle>
                                                     <DialogDescription>
-                                                        Total Amount: ₹{b.amount.toLocaleString()}
+                                                        Total Amount: Rs.{b.amount.toLocaleString()}
                                                     </DialogDescription>
                                                 </DialogHeader>
                                                 <div className="py-4">

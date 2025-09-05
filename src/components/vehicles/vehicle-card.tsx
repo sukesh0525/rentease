@@ -54,7 +54,7 @@ export function VehicleCard({ vehicle, onBookNow, onViewDetails }: VehicleCardPr
                 </div>
             </CardContent>
             <CardFooter className="bg-muted/50 p-4 flex justify-between items-center">
-                <p className="text-lg font-semibold">₹{vehicle.pricePerDay.toLocaleString()}<span className="text-sm font-normal text-muted-foreground">/day</span></p>
+                <p className="text-lg font-semibold">Rs.{vehicle.pricePerDay.toLocaleString()}<span className="text-sm font-normal text-muted-foreground">/day</span></p>
                  <Button onClick={handlePrimaryAction} disabled={onBookNow && vehicle.status !== 'Available'}>
                     {onViewDetails ? 'View Details' : 'Book Now'}
                  </Button>

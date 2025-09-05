@@ -1,3 +1,4 @@
+
 "use client"
 
 import { Bar, BarChart, CartesianGrid, Pie, PieChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Legend, Line, LineChart, Cell } from "recharts"
@@ -25,7 +26,7 @@ const bookingStatusData = [
 
 const revenueChartConfig = {
     revenue: {
-      label: "Revenue (₹k)",
+      label: "Revenue (Rs. k)",
       color: "hsl(var(--chart-1))",
     },
 }

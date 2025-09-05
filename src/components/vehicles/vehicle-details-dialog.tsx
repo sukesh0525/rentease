@@ -63,7 +63,7 @@ export function VehicleDetailsDialog({ vehicle, isOpen, onClose, onBookNow }: Ve
 
                 <h4 className="font-semibold text-lg border-b pb-2 pt-4">Pricing</h4>
                  <div className="flex items-baseline gap-2">
-                    <p className="text-3xl font-bold text-primary">₹{vehicle.pricePerDay.toLocaleString()}</p>
+                    <p className="text-3xl font-bold text-primary">Rs.{vehicle.pricePerDay.toLocaleString()}</p>
                     <span className="text-muted-foreground">/ per day</span>
                  </div>
             </div>

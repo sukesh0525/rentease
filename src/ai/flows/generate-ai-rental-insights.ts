@@ -1,3 +1,4 @@
+
 // src/ai/flows/generate-ai-rental-insights.ts
 'use server';
 /**
@@ -64,8 +65,8 @@ Here is the data for the last period:
 - Available Vehicles: {{{availableVehicles}}}
 - Rented Vehicles: {{{rentedVehicles}}}
 - Total Bookings: {{{totalBookings}}}
-- Total Revenue: ₹{{{totalRevenue}}}
-- Average Booking Value: ₹{{{averageBookingValue}}}
+- Total Revenue: Rs.{{{totalRevenue}}}
+- Average Booking Value: Rs.{{{averageBookingValue}}}
 - Top Performing Brand: {{{topPerformingBrand}}}
 - Fleet Utilization Rate: {{{fleetUtilizationRate}}}%
 - Total Customers: {{{totalCustomers}}}

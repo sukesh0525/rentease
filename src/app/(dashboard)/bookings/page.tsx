@@ -46,8 +46,8 @@ export default function BookingsPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <StatCard title="Total Bookings" value={totalBookings.toString()} icon={<Book className="h-5 w-5"/>} />
                 <StatCard title="Active Bookings" value={activeBookings.toString()} icon={<CalendarCheck className="h-5 w-5"/>} />
-                <StatCard title="Total Revenue" value={`₹${(totalRevenue/1000).toFixed(1)}k`} icon={<DollarSign className="h-5 w-5"/>} />
-                <StatCard title="Avg Booking Value" value={`₹${avgBookingValue.toLocaleString('en-IN', { maximumFractionDigits: 0 })}`} icon={<Wallet className="h-5 w-5"/>} />
+                <StatCard title="Total Revenue" value={`Rs.${(totalRevenue/1000).toFixed(1)}k`} icon={<DollarSign className="h-5 w-5"/>} />
+                <StatCard title="Avg Booking Value" value={`Rs.${avgBookingValue.toLocaleString('en-IN', { maximumFractionDigits: 0 })}`} icon={<Wallet className="h-5 w-5"/>} />
             </div>
             <Card>
                 <CardHeader>
@@ -74,7 +74,7 @@ export default function BookingsPage() {
                                     <TableCell>{b.customer?.name}</TableCell>
                                     <TableCell>{b.vehicle?.brand} {b.vehicle?.name}</TableCell>
                                     <TableCell>{b.startDate} to {b.endDate}</TableCell>
-                                    <TableCell className="font-semibold">₹{b.amount.toLocaleString()}</TableCell>
+                                    <TableCell className="font-semibold">Rs.{b.amount.toLocaleString()}</TableCell>
                                     <TableCell>{getStatusBadge(b.status)}</TableCell>
                                     <TableCell>{getPaymentBadge(b.payment)}</TableCell>
                                     <TableCell className="text-center">

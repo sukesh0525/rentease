@@ -18,7 +18,7 @@ export default function CustomersPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <StatCard title="Total Customers" value={totalCustomers.toString()} icon={<Users className="h-5 w-5"/>} />
                 <StatCard title="Corporate Clients" value={corporateClients.toString()} icon={<Briefcase className="h-5 w-5"/>} />
-                <StatCard title="Avg Customer Value" value={`₹${(avgCustomerValue/1000).toFixed(1)}k`} icon={<Wallet className="h-5 w-5"/>} />
+                <StatCard title="Avg Customer Value" value={`Rs.${(avgCustomerValue/1000).toFixed(1)}k`} icon={<Wallet className="h-5 w-5"/>} />
                 <StatCard title="Avg Rating" value="4.8" icon={<Star className="h-5 w-5"/>} />
             </div>
 
@@ -47,7 +47,7 @@ export default function CustomersPage() {
                                     <p className="text-xs text-muted-foreground">Bookings</p>
                                 </div>
                                 <div>
-                                    <p className="font-bold text-lg">₹{(c.totalSpent/1000).toFixed(1)}k</p>
+                                    <p className="font-bold text-lg">Rs.{(c.totalSpent/1000).toFixed(1)}k</p>
                                     <p className="text-xs text-muted-foreground">Total Spent</p>
                                 </div>
                                 <div>

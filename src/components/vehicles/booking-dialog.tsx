@@ -160,7 +160,7 @@ export function BookingDialog({ vehicle, isOpen, onClose }: BookingDialogProps) 
                  <Wallet className="mr-2 h-6 w-6"/>
                  <span>Total Cost:</span>
              </div>
-             <p className="text-2xl font-bold">₹{totalCost.toLocaleString()}</p>
+             <p className="text-2xl font-bold">Rs.{totalCost.toLocaleString()}</p>
           </div>
         </div>
         <DialogFooter>

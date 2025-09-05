@@ -1,3 +1,4 @@
+
 "use client";
 
 import { Bar, BarChart, CartesianGrid, Line, LineChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Legend } from "recharts";
@@ -24,7 +25,7 @@ const fleetChartData = [
 
 const chartConfig = {
     revenue: {
-      label: "Revenue (₹k)",
+      label: "Revenue (Rs. k)",
       color: "hsl(var(--chart-1))",
     },
     utilization: {
@@ -57,7 +58,7 @@ export function DashboardClientContent({ availableVehicles, recentBookings }: Da
                                 </div>
                                 {getStatusBadge(v.status)}
                             </div>
-                            <p className="text-xl font-semibold mt-3">₹{v.pricePerDay.toLocaleString()}/day</p>
+                            <p className="text-xl font-semibold mt-3">Rs.{v.pricePerDay.toLocaleString()}/day</p>
                             <Button className="w-full mt-4">View Details</Button>
                         </div>
                     ))}
@@ -77,7 +78,7 @@ export function DashboardClientContent({ availableVehicles, recentBookings }: Da
                                     <p className="text-sm text-muted-foreground">{b.vehicle?.brand} {b.vehicle?.name}</p>
                                 </div>
                                 <div className="text-right">
-                                    <p className="font-semibold">₹{b.amount.toLocaleString()}</p>
+                                    <p className="font-semibold">Rs.{b.amount.toLocaleString()}</p>
                                     {getStatusBadge(b.status)}
                                 </div>
                             </div>
