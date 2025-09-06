@@ -87,6 +87,7 @@ export function BookingDialog({ vehicle, isOpen, onClose }: BookingDialogProps) 
         const newBooking: Booking = {
             id: `BK${Math.floor(1000 + Math.random() * 9000)}`,
             customerId: user.id,
+            customerName: user.name,
             vehicleId: vehicle.id,
             startDate: format(dateRange.from, 'yyyy-MM-dd'),
             endDate: format(dateRange.to, 'yyyy-MM-dd'),

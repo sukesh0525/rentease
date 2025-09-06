@@ -11,8 +11,12 @@ import {
   DialogFooter,
   DialogClose
 } from "@/components/ui/dialog";
-import type { Vehicle } from "@/lib/data";
+import type { Vehicle, Booking } from "@/lib/data";
+import { bookings as allBookings } from "@/lib/data";
 import Image from "next/image";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Info } from "lucide-react";
+import { useState, useEffect } from "react";
 
 interface VehicleDetailsDialogProps {
   vehicle: Vehicle;
@@ -22,6 +26,18 @@ interface VehicleDetailsDialogProps {
 }
 
 export function VehicleDetailsDialog({ vehicle, isOpen, onClose, onBookNow }: VehicleDetailsDialogProps) {
+  const [activeBooking, setActiveBooking] = useState<Booking | undefined>(undefined);
+
+  useEffect(() => {
+    if (vehicle && vehicle.status === 'Rented') {
+        const booking = allBookings.find(b => b.vehicleId === vehicle.id && b.status === 'Active');
+        setActiveBooking(booking);
+    } else {
+        setActiveBooking(undefined);
+    }
+  }, [vehicle]);
+
+
   if (!vehicle) return null;
 
   const handleBookNowClick = () => {
@@ -68,6 +84,27 @@ export function VehicleDetailsDialog({ vehicle, isOpen, onClose, onBookNow }: Ve
                  </div>
             </div>
         </div>
+
+        {vehicle.status === 'Rented' && activeBooking && (
+          <Alert>
+              <Info className="h-4 w-4" />
+              <AlertTitle>Currently Booked</AlertTitle>
+              <AlertDescription>
+                  This vehicle is currently rented by {activeBooking.customerName} and will be available after {activeBooking.endDate}.
+              </AlertDescription>
+          </Alert>
+        )}
+         {vehicle.status === 'Maintenance' && (
+          <Alert variant="destructive">
+              <Info className="h-4 w-4" />
+              <AlertTitle>Under Maintenance</AlertTitle>
+              <AlertDescription>
+                  This vehicle is currently undergoing maintenance and is not available for booking.
+              </AlertDescription>
+          </Alert>
+        )}
+
+
         <DialogFooter className="sm:justify-between">
             <DialogClose asChild>
                 <Button type="button" variant="secondary">Close</Button>
