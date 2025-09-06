@@ -41,22 +41,26 @@ export default function UserVehiclesPage() {
   }, []);
 
   useEffect(() => {
-    let availableVehicles = allVehicles.filter(v => v.status === 'Available');
+    let vehicles = allVehicles;
 
     if (searchTerm) {
-        availableVehicles = availableVehicles.filter(v => 
+        vehicles = vehicles.filter(v => 
             v.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
             v.brand.toLowerCase().includes(searchTerm.toLowerCase())
         );
     }
     if (selectedBrand !== 'all') {
-        availableVehicles = availableVehicles.filter(v => v.brand === selectedBrand);
+        vehicles = vehicles.filter(v => v.brand === selectedBrand);
     }
     if (selectedType !== 'all') {
-        availableVehicles = availableVehicles.filter(v => v.type === selectedType);
+        vehicles = vehicles.filter(v => v.type === selectedType);
     }
     
-    setFilteredVehicles(availableVehicles);
+    // Sort vehicles: Available > Rented > Maintenance
+    const statusOrder = { 'Available': 1, 'Rented': 2, 'Maintenance': 3 };
+    vehicles.sort((a, b) => statusOrder[a.status] - statusOrder[b.status]);
+    
+    setFilteredVehicles(vehicles);
   }, [searchTerm, selectedBrand, selectedType, allVehicles]);
 
 
