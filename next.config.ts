@@ -36,7 +36,8 @@ const nextConfig: NextConfig = {
         hostname: 'akm-img-a-in.tosshub.com',
       },
       {
-        protocol: 'https',
+        protocol: 'https'
+        ,
         hostname: 'cdn.motor1.com',
       },
       {
