@@ -9,9 +9,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
-import { customers } from '@/lib/data';
-import { useState } from 'react';
+import { customers as initialCustomers } from '@/lib/data';
+import { useState, useEffect } from 'react';
 import { Car, ShieldCheck, Tag, Users } from 'lucide-react';
+import type { Customer } from '@/lib/data';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -20,6 +21,23 @@ export default function LoginPage() {
   const [userPassword, setUserPassword] = useState('');
   const [adminEmail, setAdminEmail] = useState('');
   const [adminPassword, setAdminPassword] = useState('');
+  const [customers, setCustomers] = useState<Customer[]>(initialCustomers);
+
+  useEffect(() => {
+    try {
+        const storedCustomers = localStorage.getItem('customers');
+        if (storedCustomers) {
+            setCustomers(JSON.parse(storedCustomers));
+        } else {
+            // If no customers in storage, use initial and save them.
+            localStorage.setItem('customers', JSON.stringify(initialCustomers));
+        }
+    } catch (error) {
+        console.error("Failed to parse customers from localStorage", error);
+        setCustomers(initialCustomers);
+    }
+  }, []);
+
 
   const handleAdminLogin = (e: React.FormEvent) => {
     e.preventDefault();

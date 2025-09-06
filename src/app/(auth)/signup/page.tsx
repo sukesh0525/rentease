@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { customers } from '@/lib/data';
+import { customers as initialCustomers, type Customer } from '@/lib/data';
 
 export default function SignupPage() {
   const router = useRouter();
@@ -23,8 +23,11 @@ export default function SignupPage() {
     const phone = formData.get('phone') as string;
     const address = formData.get('address') as string;
 
+    const storedCustomersRaw = localStorage.getItem('customers');
+    const currentCustomers: Customer[] = storedCustomersRaw ? JSON.parse(storedCustomersRaw) : initialCustomers;
+
     // Check if user already exists
-    if (customers.some(c => c.email === email)) {
+    if (currentCustomers.some(c => c.email === email)) {
         toast({
             variant: "destructive",
             title: "Signup Failed",
@@ -34,8 +37,8 @@ export default function SignupPage() {
     }
 
     // Add new user to the mock data array
-    const newUser = {
-        id: customers.length + 1,
+    const newUser: Customer = {
+        id: currentCustomers.length > 0 ? Math.max(...currentCustomers.map(c => c.id)) + 1 : 1,
         name: fullName,
         email,
         phone,
@@ -49,7 +52,8 @@ export default function SignupPage() {
         avatar: `https://i.pravatar.cc/150?u=${email}`
     };
     
-    customers.push(newUser);
+    const updatedCustomers = [...currentCustomers, newUser];
+    localStorage.setItem('customers', JSON.stringify(updatedCustomers));
 
     // Simulate login by storing email
     localStorage.setItem('loggedInUserEmail', newUser.email);
