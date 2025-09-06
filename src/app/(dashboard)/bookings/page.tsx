@@ -62,13 +62,28 @@ export default function BookingsPage() {
     const avgBookingValue = totalRevenue > 0 ? totalRevenue / totalBookings : 0;
 
     const handleBookingAction = (bookingId: string, newStatus: 'Confirmed' | 'Cancelled') => {
-        let allBookings: Booking[] = JSON.parse(localStorage.getItem('bookings') || '[]');
+        const storedBookingsRaw = localStorage.getItem('bookings');
+        const storedVehiclesRaw = localStorage.getItem('vehicles');
+        let allBookings: Booking[] = storedBookingsRaw ? JSON.parse(storedBookingsRaw) : initialBookings;
+        let allVehicles: Vehicle[] = storedVehiclesRaw ? JSON.parse(storedVehiclesRaw) : initialVehicles;
+
         const bookingIndex = allBookings.findIndex(b => b.id === bookingId);
+        
         if (bookingIndex > -1) {
-            allBookings[bookingIndex].status = newStatus;
+            const booking = allBookings[bookingIndex];
+            booking.status = newStatus;
+
+            // If confirmed, update vehicle status to Rented
+            if (newStatus === 'Confirmed') {
+                const vehicleIndex = allVehicles.findIndex(v => v.id === booking.vehicleId);
+                if (vehicleIndex > -1) {
+                    allVehicles[vehicleIndex].status = 'Rented';
+                }
+            }
         }
 
         localStorage.setItem('bookings', JSON.stringify(allBookings));
+        localStorage.setItem('vehicles', JSON.stringify(allVehicles));
         // This is a hack to notify other tabs/windows.
         window.dispatchEvent(new Event('storage'));
         loadBookings(); // Reload data on current page

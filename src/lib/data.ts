@@ -47,7 +47,7 @@ export interface Booking {
 }
 
 export const vehicles: Vehicle[] = [
-    { id: 1, name: 'Swift', brand: 'Maruti Suzuki', type: 'Hatchback', year: 2023, status: 'Available', pricePerDay: 1500, image: 'https://imgd.aeplcdn.com/1920x1080/n/cw/ec/159099/swift-exterior-right-front-three-quarter-31.jpeg?isig=0&q=80&q=80', aiHint: 'Maruti Swift', color: 'Red', plate: 'AP-01-AB-1234', seats: 5, mileage: '22 km/l' },
+    { id: 1, name: 'Swift', brand: 'Maruti Suzuki', type: 'Hatchback', year: 2023, status: 'Rented', pricePerDay: 1500, image: 'https://imgd.aeplcdn.com/1920x1080/n/cw/ec/159099/swift-exterior-right-front-three-quarter-31.jpeg?isig=0&q=80&q=80', aiHint: 'Maruti Swift', color: 'Red', plate: 'AP-01-AB-1234', seats: 5, mileage: '22 km/l' },
     { id: 2, name: 'Nexon', brand: 'Tata', type: 'SUV', year: 2023, status: 'Available', pricePerDay: 2200, image: 'https://www.rushlane.com/wp-content/uploads/2024/09/tata-nexon-top-suv-reasons.jpg', aiHint: 'Tata Nexon', color: 'White', plate: 'AP-02-CD-5678', seats: 5, mileage: '17 km/l' },
     { id: 3, name: 'City', brand: 'Honda', type: 'Sedan', year: 2024, status: 'Rented', pricePerDay: 2000, image: 'https://akm-img-a-in.tosshub.com/indiatoday/images/story/202303/honda_city_exterior-sixteen_nine.jpg?VersionId=xm7qR1GM.ya1zCFsPqnwu4bDnSFxWjgt&size=690%3A388', aiHint: 'Honda City', color: 'Blue', plate: 'AP-03-EF-9012', seats: 5, mileage: '18 km/l' },
     { id: 4, name: 'Pulsar NS200', brand: 'Bajaj', type: 'Motorcycle', year: 2023, status: 'Available', pricePerDay: 800, image: 'https://cdn.motor1.com/images/mgl/L3vElQ/s1/bajaj-presents-the-2023-pulsar-ns200-and-ns160-in-india.jpg', aiHint: 'Bajaj Pulsar', color: 'Black', plate: 'AP-04-GH-3456', seats: 2, mileage: '35 km/l' },
@@ -71,6 +71,6 @@ export const bookings: Booking[] = [
     { id: 'BK003', customerId: 3, customerName: 'Amit Patel', vehicleId: 2, startDate: '2024-04-12', endDate: '2024-04-24', amount: 26400, status: 'Completed', payment: 'Paid' },
     { id: 'BK004', customerId: 4, customerName: 'Sunita Singh', vehicleId: 6, startDate: '2024-06-20', endDate: '2024-06-23', amount: 10000, status: 'Pending', payment: 'Pending' },
     { id: 'BK005', customerId: 5, customerName: 'Vikram Gupta', vehicleId: 4, startDate: '2024-06-19', endDate: '2024-06-25', amount: 5600, status: 'Confirmed', payment: 'Paid' },
-    { id: 'BK006', customerId: 2, customerName: 'Priya Sharma', vehicleId: 7, startDate: '2024-06-25', endDate: '2024-06-30', amount: 3000, status: 'Confirmed', payment: 'Paid' },
+    { id: 'BK006', customerId: 2, customerName: 'Priya Sharma', vehicleId: 7, startDate: '2024-06-25', endDate: '2024-06-30', amount: 3000, status: 'Active', payment: 'Paid' },
     { id: 'BK007', customerId: 1, customerName: 'Rajesh Kumar', vehicleId: 8, startDate: '2024-07-01', endDate: '2024-07-05', amount: 11200, status: 'Confirmed', payment: 'Pending' },
 ];

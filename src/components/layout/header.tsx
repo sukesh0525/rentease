@@ -14,7 +14,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuGroup,
 } from '@/components/ui/dropdown-menu';
-import { bookings as initialBookings, customers, vehicles } from '@/lib/data';
+import { bookings as initialBookings, customers, vehicles as initialVehicles } from '@/lib/data';
 import { useToast } from '@/hooks/use-toast';
 import { useState, useEffect } from 'react';
 import type { Booking, Customer, Vehicle } from '@/lib/data';
@@ -44,7 +44,7 @@ export function Header({ title }: HeaderProps) {
       .map((b: Booking) => ({
           ...b,
           customer: customers.find(c => c.id === b.customerId),
-          vehicle: vehicles.find(v => v.id === b.vehicleId),
+          vehicle: initialVehicles.find(v => v.id === b.vehicleId),
       }));
     setPendingBookings(pending);
   }
@@ -60,14 +60,26 @@ export function Header({ title }: HeaderProps) {
 
   const handleBookingAction = (bookingId: string, newStatus: 'Confirmed' | 'Cancelled') => {
       const storedBookingsRaw = localStorage.getItem('bookings');
+      const storedVehiclesRaw = localStorage.getItem('vehicles');
       let allBookings: Booking[] = storedBookingsRaw ? JSON.parse(storedBookingsRaw) : initialBookings;
+      let allVehicles: Vehicle[] = storedVehiclesRaw ? JSON.parse(storedVehiclesRaw) : initialVehicles;
       
       const bookingIndex = allBookings.findIndex(b => b.id === bookingId);
       if (bookingIndex > -1) {
-          allBookings[bookingIndex].status = newStatus;
+          const booking = allBookings[bookingIndex];
+          booking.status = newStatus;
+          
+          if (newStatus === 'Confirmed') {
+              const vehicleIndex = allVehicles.findIndex(v => v.id === booking.vehicleId);
+              if (vehicleIndex > -1) {
+                  allVehicles[vehicleIndex].status = 'Rented';
+              }
+          }
       }
       
       localStorage.setItem('bookings', JSON.stringify(allBookings));
+      localStorage.setItem('vehicles', JSON.stringify(allVehicles));
+
       loadPendingBookings(); // a bit inefficient but ensures state is sync
       // This is a hack to notify other tabs/windows.
       window.dispatchEvent(new Event('storage'));
