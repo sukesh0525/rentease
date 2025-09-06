@@ -3,9 +3,9 @@
 
 import { StatCard } from "@/components/dashboard/stat-card";
 import { Car, DollarSign, Gauge, Users, Wrench } from "lucide-react";
-import { bookings, customers, vehicles, type Booking, type Customer, type Vehicle } from "@/lib/data";
+import { bookings as initialBookings, customers, vehicles as initialVehicles, type Booking, type Customer, type Vehicle } from "@/lib/data";
 import { DashboardClientContent } from "@/components/dashboard/dashboard-client-content";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { LoadingScreen } from "@/components/common/loader";
 import type { GenerateInsightsOutput } from "@/ai/flows/insights-flow";
 import { getInsightsAction } from "@/app/(dashboard)/ai-insights/actions";
@@ -26,25 +26,31 @@ export default function DashboardPage() {
         insightsData: GenerateInsightsOutput['insights'];
     } | null>(null);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const totalVehicles = vehicles.length;
-            const availableNow = vehicles.filter(v => v.status === 'Available').length;
-            const currentlyRented = vehicles.filter(v => v.status === 'Rented').length;
-            const underMaintenance = vehicles.filter(v => v.status === 'Maintenance').length;
-            const totalRevenue = bookings.reduce((sum, b) => sum + b.amount, 0);
-            const utilization = totalVehicles > 0 ? ((currentlyRented / totalVehicles) * 100).toFixed(0) : "0";
-            const totalCustomers = customers.length;
+    const fetchData = useCallback(async () => {
+        setIsLoading(true);
+        const storedBookingsRaw = localStorage.getItem('bookings');
+        const storedVehiclesRaw = localStorage.getItem('vehicles');
 
-            const availableVehiclesData = vehicles.filter(v => v.status === 'Available');
-            const recentBookingsData = bookings.map(b => ({
-                ...b,
-                customer: customers.find(c => c.id === b.customerId),
-                vehicle: vehicles.find(v => v.id === b.vehicleId),
-            }));
+        const bookings: Booking[] = storedBookingsRaw ? JSON.parse(storedBookingsRaw) : initialBookings;
+        const vehicles: Vehicle[] = storedVehiclesRaw ? JSON.parse(storedVehiclesRaw) : initialVehicles;
 
+        const totalVehicles = vehicles.length;
+        const availableNow = vehicles.filter(v => v.status === 'Available').length;
+        const currentlyRented = vehicles.filter(v => v.status === 'Rented').length;
+        const underMaintenance = vehicles.filter(v => v.status === 'Maintenance').length;
+        const totalRevenue = bookings.reduce((sum, b) => sum + b.amount, 0);
+        const utilization = totalVehicles > 0 ? ((currentlyRented / totalVehicles) * 100).toFixed(0) : "0";
+        const totalCustomers = customers.length;
+
+        const availableVehiclesData = vehicles.filter(v => v.status === 'Available');
+        const recentBookingsData = bookings.sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime()).map(b => ({
+            ...b,
+            customer: customers.find(c => c.id === b.customerId),
+            vehicle: vehicles.find(v => v.id === b.vehicleId),
+        }));
+        
+        try {
             const insightsResult = await getInsightsAction();
-
             setDashboardData({
                 totalVehicles,
                 availableNow,
@@ -57,11 +63,34 @@ export default function DashboardPage() {
                 recentBookingsData,
                 insightsData: insightsResult.insights.slice(0, 2),
             });
+        } catch (e) {
+             console.error("Could not generate insights, using fallback data", e);
+             setDashboardData({
+                totalVehicles,
+                availableNow,
+                currentlyRented,
+                underMaintenance,
+                totalRevenue,
+                utilization,
+                totalCustomers,
+                availableVehiclesData,
+                recentBookingsData,
+                insightsData: [
+                    { title: "Insights Unavailable", description: "AI analysis could not be performed at this time.", recommendation: "Please check back later."}
+                ],
+            });
+        } finally {
             setIsLoading(false);
-        };
+        }
+    }, []);
 
+    useEffect(() => {
         fetchData();
-    }, []); // Re-run when vehicles data might have changed. A more robust solution might use a state manager.
+        window.addEventListener('storage', fetchData);
+        return () => {
+            window.removeEventListener('storage', fetchData);
+        };
+    }, [fetchData]);
 
     if (isLoading || !dashboardData) {
         return <LoadingScreen />
