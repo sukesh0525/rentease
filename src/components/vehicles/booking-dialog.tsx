@@ -18,9 +18,9 @@ import { Label } from "@/components/ui/label";
 import type { Vehicle, Customer, Booking } from "@/lib/data";
 import { Calendar as CalendarIcon, Wallet } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { customers as initialCustomers, bookings as initialBookings } from "@/lib/data";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
+import { getCustomers, addBooking } from "@/lib/dataService";
 
 interface BookingDialogProps {
   vehicle: Vehicle;
@@ -40,13 +40,13 @@ export function BookingDialog({ vehicle, isOpen, onClose }: BookingDialogProps) 
     useEffect(() => {
         if (dateRange.from && dateRange.to) {
             const days = differenceInDays(dateRange.to, dateRange.from) + 1;
-            setTotalCost(days * vehicle.pricePerDay);
+            setTotalCost(days > 0 ? days * vehicle.pricePerDay : vehicle.pricePerDay);
         } else {
             setTotalCost(0);
         }
     }, [dateRange, vehicle.pricePerDay]);
 
-    const handleBooking = () => {
+    const handleBooking = async () => {
         const userEmail = localStorage.getItem('loggedInUserEmail');
         if (!userEmail) {
             toast({
@@ -58,8 +58,7 @@ export function BookingDialog({ vehicle, isOpen, onClose }: BookingDialogProps) 
             return;
         }
 
-        const storedCustomersRaw = localStorage.getItem('customers');
-        const customers: Customer[] = storedCustomersRaw ? JSON.parse(storedCustomersRaw) : initialCustomers;
+        const customers: Customer[] = await getCustomers();
         const user = customers.find(c => c.email === userEmail);
         
         if (!user) {
@@ -81,33 +80,32 @@ export function BookingDialog({ vehicle, isOpen, onClose }: BookingDialogProps) 
             return;
         }
         
-        const storedBookingsRaw = localStorage.getItem('bookings');
-        const currentBookings: Booking[] = storedBookingsRaw ? JSON.parse(storedBookingsRaw) : initialBookings;
-
-        const newBooking: Booking = {
-            id: `BK${Math.floor(1000 + Math.random() * 9000)}`,
+        const newBookingId = `BK${Math.floor(1000 + Math.random() * 9000)}`;
+        const newBooking: Omit<Booking, 'id'> = {
             customerId: user.id,
             vehicleId: vehicle.id,
             startDate: format(dateRange.from, 'yyyy-MM-dd'),
             endDate: format(dateRange.to, 'yyyy-MM-dd'),
             amount: totalCost,
-            status: 'Pending' as const,
-            payment: 'Pending' as const,
+            status: 'Pending',
+            payment: 'Pending',
         };
 
-        const updatedBookings = [...currentBookings, newBooking];
-        localStorage.setItem('bookings', JSON.stringify(updatedBookings));
-
-        // This is a hack to notify other tabs/windows.
-        window.dispatchEvent(new Event('storage'));
-
-        toast({
-            title: 'Booking Request Sent!',
-            description: 'Your request has been sent to the admin for approval.',
-        });
-
-        onClose();
-        router.push('/user/bookings');
+        try {
+            await addBooking(newBooking, newBookingId);
+            toast({
+                title: 'Booking Request Sent!',
+                description: 'Your request has been sent to the admin for approval.',
+            });
+            onClose();
+            router.push('/user/bookings');
+        } catch (error) {
+             toast({
+                variant: 'destructive',
+                title: 'Booking Failed',
+                description: 'Could not send booking request. Please try again.',
+            });
+        }
     };
 
   return (

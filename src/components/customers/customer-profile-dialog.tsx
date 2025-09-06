@@ -12,11 +12,13 @@ import {
   DialogClose
 } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { bookings as initialBookings, vehicles, type Customer, type Booking } from "@/lib/data";
+import type { Customer, Booking, Vehicle } from "@/lib/data";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { getStatusBadge } from "@/lib/utils.tsx";
 import { Star, Calendar, Wallet } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
+import { getBookings, getVehicles } from "@/lib/dataService";
+import { useToast } from "@/hooks/use-toast";
 
 interface CustomerProfileDialogProps {
   customer: Customer;
@@ -26,34 +28,40 @@ interface CustomerProfileDialogProps {
 
 export function CustomerProfileDialog({ customer, isOpen, onClose }: CustomerProfileDialogProps) {
   const [bookings, setBookings] = useState<Booking[]>([]);
+  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+  const { toast } = useToast();
 
-  const loadData = () => {
-    const storedBookings = localStorage.getItem('bookings');
-    if (storedBookings) {
-        setBookings(JSON.parse(storedBookings));
-    } else {
-        setBookings(initialBookings);
+  const loadData = useCallback(async () => {
+    if (!customer) return;
+    try {
+        const [bookingsData, vehiclesData] = await Promise.all([
+            getBookings(),
+            getVehicles()
+        ]);
+        const customerBookings = bookingsData.filter(b => b.customerId === customer.id);
+        setBookings(customerBookings);
+        setVehicles(vehiclesData);
+    } catch (error) {
+        toast({
+            variant: "destructive",
+            title: "Error",
+            description: "Could not load booking history."
+        })
     }
-  }
+  }, [customer, toast]);
 
   useEffect(() => {
     if (isOpen) {
         loadData();
-        window.addEventListener('storage', loadData);
     }
-    return () => {
-        window.removeEventListener('storage', loadData);
-    };
-  }, [isOpen]);
+  }, [isOpen, loadData]);
 
   if (!customer) return null;
 
-  const customerBookings = bookings
-    .filter(b => b.customerId === customer.id)
-    .map(b => ({
+  const bookingDetails = bookings.map(b => ({
       ...b,
       vehicle: vehicles.find(v => v.id === b.vehicleId)
-    }));
+  }));
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -101,14 +109,14 @@ export function CustomerProfileDialog({ customer, isOpen, onClose }: CustomerPro
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {customerBookings.map(booking => (
+                            {bookingDetails.length > 0 ? bookingDetails.map(booking => (
                                 <TableRow key={booking.id}>
                                     <TableCell>{booking.vehicle?.brand} {booking.vehicle?.name}</TableCell>
                                     <TableCell>{booking.startDate} to {booking.endDate}</TableCell>
                                     <TableCell>Rs.{booking.amount.toLocaleString()}</TableCell>
                                     <TableCell>{getStatusBadge(booking.status)}</TableCell>
                                 </TableRow>
-                            ))}
+                            )) : <TableRow><TableCell colSpan={4} className="text-center">No bookings found.</TableCell></TableRow>}
                         </TableBody>
                     </Table>
                 </div>

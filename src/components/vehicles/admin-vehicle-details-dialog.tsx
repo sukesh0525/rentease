@@ -18,19 +18,23 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { Edit } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { updateVehicle } from "@/lib/dataService";
+
 
 interface AdminVehicleDetailsDialogProps {
   vehicle: Vehicle;
   isOpen: boolean;
   onClose: () => void;
-  onSave: (vehicle: Vehicle) => void;
+  onSave: () => void;
 }
 
 export function AdminVehicleDetailsDialog({ vehicle, isOpen, onClose, onSave }: AdminVehicleDetailsDialogProps) {
   const [editedVehicle, setEditedVehicle] = useState<Vehicle>(vehicle);
   const [imagePreview, setImagePreview] = useState<string>(vehicle.image);
+  const [isSaving, setIsSaving] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-
+  const { toast } = useToast();
 
   useEffect(() => {
     setEditedVehicle(vehicle);
@@ -48,8 +52,26 @@ export function AdminVehicleDetailsDialog({ vehicle, isOpen, onClose, onSave }: 
     setEditedVehicle(prev => ({ ...prev, [id]: value }));
   };
   
-  const handleSaveChanges = () => {
-    onSave(editedVehicle);
+  const handleSaveChanges = async () => {
+    setIsSaving(true);
+    try {
+        const { id, ...vehicleData } = editedVehicle;
+        await updateVehicle(id, vehicleData);
+        toast({
+            title: "Vehicle Updated",
+            description: "The vehicle details have been saved."
+        });
+        onSave();
+        onClose();
+    } catch (error) {
+        toast({
+            variant: "destructive",
+            title: "Update Failed",
+            description: "Could not save vehicle details."
+        });
+    } finally {
+        setIsSaving(false);
+    }
   };
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -158,7 +180,7 @@ export function AdminVehicleDetailsDialog({ vehicle, isOpen, onClose, onSave }: 
                     </div>
                     <div>
                         <Label htmlFor="status">Status</Label>
-                         <Select value={editedVehicle.status} onValueChange={(value) => handleSelectChange('status', value)}>
+                         <Select value={editedVehicle.status} onValueChange={(value) => handleSelectChange('status', value as Vehicle['status'])}>
                             <SelectTrigger><SelectValue /></SelectTrigger>
                             <SelectContent>
                                 <SelectItem value="Available">Available</SelectItem>
@@ -174,7 +196,9 @@ export function AdminVehicleDetailsDialog({ vehicle, isOpen, onClose, onSave }: 
             <DialogClose asChild>
                 <Button type="button" variant="secondary">Cancel</Button>
             </DialogClose>
-            <Button onClick={handleSaveChanges}>Save Changes</Button>
+            <Button onClick={handleSaveChanges} disabled={isSaving}>
+                {isSaving ? "Saving..." : "Save Changes"}
+            </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

@@ -9,8 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
-  DialogFooter,
-  DialogClose
+  DialogFooter
 } from "@/components/ui/dialog";
 import type { Vehicle } from "@/lib/data";
 import Image from "next/image";
@@ -18,11 +17,13 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { Edit, UploadCloud } from "lucide-react";
+import { addVehicle } from "@/lib/dataService";
+import { useToast } from "@/hooks/use-toast";
 
 interface AdminAddVehicleDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (vehicle: Omit<Vehicle, 'id' | 'status'>) => void;
+  onSave: () => void;
 }
 
 const initialVehicleState: Omit<Vehicle, 'id' | 'status'> = {
@@ -42,7 +43,9 @@ const initialVehicleState: Omit<Vehicle, 'id' | 'status'> = {
 export function AdminAddVehicleDialog({ isOpen, onClose, onSave }: AdminAddVehicleDialogProps) {
   const [newVehicle, setNewVehicle] = useState(initialVehicleState);
   const [imagePreview, setImagePreview] = useState<string>(initialVehicleState.image);
+  const [isSaving, setIsSaving] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { toast } = useToast();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value, type } = e.target;
@@ -53,16 +56,37 @@ export function AdminAddVehicleDialog({ isOpen, onClose, onSave }: AdminAddVehic
     setNewVehicle(prev => ({ ...prev, [id]: value }));
   };
   
-  const handleSaveChanges = () => {
-    // Basic validation
+  const handleSaveChanges = async () => {
     if (!newVehicle.brand || !newVehicle.name || !newVehicle.plate) {
-        alert("Please fill in Brand, Name, and License Plate.");
+        toast({
+            variant: "destructive",
+            title: "Validation Error",
+            description: "Please fill in Brand, Name, and License Plate."
+        });
         return;
     }
-    onSave(newVehicle);
-    // Reset form after saving
-    setNewVehicle(initialVehicleState);
-    setImagePreview(initialVehicleState.image);
+    setIsSaving(true);
+    try {
+        const vehicleData = {
+            ...newVehicle,
+            status: 'Available' as const,
+        };
+        await addVehicle(vehicleData);
+        toast({
+            title: "Vehicle Added",
+            description: `${newVehicle.brand} ${newVehicle.name} has been added to the fleet.`
+        });
+        onSave(); // This will trigger a reload on the vehicles page
+        handleDialogClose();
+    } catch (error) {
+        toast({
+            variant: "destructive",
+            title: "Save Failed",
+            description: "Could not add the new vehicle."
+        });
+    } finally {
+        setIsSaving(false);
+    }
   };
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -79,7 +103,6 @@ export function AdminAddVehicleDialog({ isOpen, onClose, onSave }: AdminAddVehic
   };
 
   const handleDialogClose = () => {
-    // Reset state when closing without saving
     setNewVehicle(initialVehicleState);
     setImagePreview(initialVehicleState.image);
     onClose();
@@ -188,7 +211,9 @@ export function AdminAddVehicleDialog({ isOpen, onClose, onSave }: AdminAddVehic
         </div>
         <DialogFooter>
             <Button type="button" variant="secondary" onClick={handleDialogClose}>Cancel</Button>
-            <Button onClick={handleSaveChanges}>Add Vehicle</Button>
+            <Button onClick={handleSaveChanges} disabled={isSaving}>
+                {isSaving ? "Saving..." : "Add Vehicle"}
+            </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

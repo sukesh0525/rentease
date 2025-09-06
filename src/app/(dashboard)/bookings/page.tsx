@@ -1,41 +1,49 @@
 
 "use client";
 
-import { bookings as initialBookings, customers, vehicles } from "@/lib/data";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { getPaymentBadge, getStatusBadge } from "@/lib/utils.tsx";
 import { StatCard } from "@/components/dashboard/stat-card";
 import { Book, CalendarCheck, Check, DollarSign, Wallet, X } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useToast } from "@/hooks/use-toast";
-import type { Booking } from "@/lib/data";
+import type { Booking, Customer, Vehicle } from "@/lib/data";
+import { getBookings, getCustomers, getVehicles, updateBooking } from "@/lib/dataService";
 
 export default function BookingsPage() {
     const { toast } = useToast();
     const [currentBookings, setCurrentBookings] = useState<Booking[]>([]);
+    const [customers, setCustomers] = useState<Customer[]>([]);
+    const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
 
-    const loadBookings = () => {
-        const storedBookings = localStorage.getItem('bookings');
-        setCurrentBookings(storedBookings ? JSON.parse(storedBookings) : initialBookings);
-    };
+    const loadBookings = useCallback(async () => {
+        setIsLoading(true);
+        try {
+            const [bookingsData, customersData, vehiclesData] = await Promise.all([
+                getBookings(),
+                getCustomers(),
+                getVehicles()
+            ]);
+            setCurrentBookings(bookingsData);
+            setCustomers(customersData);
+            setVehicles(vehiclesData);
+        } catch (error) {
+            toast({
+                variant: 'destructive',
+                title: 'Error loading data',
+                description: 'Could not fetch data from the server.'
+            });
+        } finally {
+            setIsLoading(false);
+        }
+    }, [toast]);
 
     useEffect(() => {
         loadBookings();
-        // Listen for changes from other tabs/windows
-        window.addEventListener('storage', loadBookings);
-        return () => {
-            window.removeEventListener('storage', loadBookings);
-        };
-    }, []);
-
-    const saveBookingsToLocalStorage = (bookingsToSave: Booking[]) => {
-        localStorage.setItem('bookings', JSON.stringify(bookingsToSave));
-        setCurrentBookings(bookingsToSave);
-        // This is a hack to notify other tabs/windows.
-        window.dispatchEvent(new Event('storage'));
-    };
+    }, [loadBookings]);
 
     const bookingDetails = currentBookings.map(b => {
         const customer = customers.find(c => c.id === b.customerId);
@@ -48,16 +56,23 @@ export default function BookingsPage() {
     const totalRevenue = currentBookings.reduce((sum, b) => sum + b.amount, 0);
     const avgBookingValue = totalRevenue > 0 ? totalRevenue / totalBookings : 0;
 
-    const handleBookingAction = (bookingId: string, newStatus: 'Confirmed' | 'Cancelled') => {
-        const updatedBookings = currentBookings.map(b => 
-            b.id === bookingId ? { ...b, status: newStatus } : b
-        );
-        saveBookingsToLocalStorage(updatedBookings);
-        
-        toast({
-            title: `Booking ${newStatus}`,
-            description: `The booking request ${bookingId} has been ${newStatus.toLowerCase()}.`,
-        });
+    const handleBookingAction = async (bookingId: string, newStatus: 'Confirmed' | 'Cancelled') => {
+        try {
+            await updateBooking(bookingId, { status: newStatus });
+            setCurrentBookings(prev => 
+                prev.map(b => (b.id === bookingId ? { ...b, status: newStatus } : b))
+            );
+            toast({
+                title: `Booking ${newStatus}`,
+                description: `The booking request ${bookingId} has been ${newStatus.toLowerCase()}.`,
+            });
+        } catch (error) {
+            toast({
+                variant: 'destructive',
+                title: 'Update Failed',
+                description: 'Could not update the booking status.',
+            });
+        }
     };
 
     return (
@@ -87,31 +102,37 @@ export default function BookingsPage() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {bookingDetails.map(b => (
-                                <TableRow key={b.id}>
-                                    <TableCell className="font-medium">{b.id}</TableCell>
-                                    <TableCell>{b.customer?.name}</TableCell>
-                                    <TableCell>{b.vehicle?.brand} {b.vehicle?.name}</TableCell>
-                                    <TableCell>{b.startDate} to {b.endDate}</TableCell>
-                                    <TableCell className="font-semibold">Rs.{b.amount.toLocaleString()}</TableCell>
-                                    <TableCell>{getStatusBadge(b.status)}</TableCell>
-                                    <TableCell>{getPaymentBadge(b.payment)}</TableCell>
-                                    <TableCell className="text-center">
-                                        {b.status === 'Pending' ? (
-                                            <div className="flex gap-2 justify-center">
-                                                <Button size="sm" variant="outline" className="text-green-600 border-green-600 hover:bg-green-50 hover:text-green-700" onClick={() => handleBookingAction(b.id, 'Confirmed')}>
-                                                    <Check className="h-4 w-4 mr-1" /> Approve
-                                                </Button>
-                                                <Button size="sm" variant="outline" className="text-red-600 border-red-600 hover:bg-red-50 hover:text-red-700" onClick={() => handleBookingAction(b.id, 'Cancelled')}>
-                                                    <X className="h-4 w-4 mr-1" /> Decline
-                                                </Button>
-                                            </div>
-                                        ) : (
-                                            <Button variant="link" className="p-0 h-auto">View</Button>
-                                        )}
-                                    </TableCell>
+                            {isLoading ? (
+                                <TableRow>
+                                    <TableCell colSpan={8} className="text-center">Loading bookings...</TableCell>
                                 </TableRow>
-                            ))}
+                            ) : (
+                                bookingDetails.map(b => (
+                                    <TableRow key={b.id}>
+                                        <TableCell className="font-medium">{b.id}</TableCell>
+                                        <TableCell>{b.customer?.name}</TableCell>
+                                        <TableCell>{b.vehicle?.brand} {b.vehicle?.name}</TableCell>
+                                        <TableCell>{b.startDate} to {b.endDate}</TableCell>
+                                        <TableCell className="font-semibold">Rs.{b.amount.toLocaleString()}</TableCell>
+                                        <TableCell>{getStatusBadge(b.status)}</TableCell>
+                                        <TableCell>{getPaymentBadge(b.payment)}</TableCell>
+                                        <TableCell className="text-center">
+                                            {b.status === 'Pending' ? (
+                                                <div className="flex gap-2 justify-center">
+                                                    <Button size="sm" variant="outline" className="text-green-600 border-green-600 hover:bg-green-50 hover:text-green-700" onClick={() => handleBookingAction(b.id, 'Confirmed')}>
+                                                        <Check className="h-4 w-4 mr-1" /> Approve
+                                                    </Button>
+                                                    <Button size="sm" variant="outline" className="text-red-600 border-red-600 hover:bg-red-50 hover:text-red-700" onClick={() => handleBookingAction(b.id, 'Cancelled')}>
+                                                        <X className="h-4 w-4 mr-1" /> Decline
+                                                    </Button>
+                                                </div>
+                                            ) : (
+                                                <Button variant="link" className="p-0 h-auto">View</Button>
+                                            )}
+                                        </TableCell>
+                                    </TableRow>
+                                ))
+                            )}
                         </TableBody>
                     </Table>
                 </CardContent>
@@ -119,3 +140,4 @@ export default function BookingsPage() {
         </div>
     );
 }
+

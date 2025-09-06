@@ -1,8 +1,8 @@
 
 "use client";
 
-import { useState, useEffect } from "react";
-import { vehicles as initialVehicles, type Vehicle } from "@/lib/data";
+import { useState, useEffect, useCallback } from "react";
+import type { Vehicle } from "@/lib/data";
 import { VehicleCard } from "@/components/vehicles/vehicle-card";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -11,32 +11,36 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { AdminVehicleDetailsDialog } from "@/components/vehicles/admin-vehicle-details-dialog";
 import { AdminAddVehicleDialog } from "@/components/vehicles/admin-add-vehicle-dialog";
+import { getVehicles } from "@/lib/dataService";
 import { useToast } from "@/hooks/use-toast";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function VehiclesPage() {
   const [vehicleList, setVehicleList] = useState<Vehicle[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [vehicleToEdit, setVehicleToEdit] = useState<Vehicle | null>(null);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const { toast } = useToast();
 
-  const loadVehicles = () => {
-    const storedVehicles = localStorage.getItem('vehicles');
-    setVehicleList(storedVehicles ? JSON.parse(storedVehicles) : initialVehicles);
-  };
+  const loadVehicles = useCallback(async () => {
+    setIsLoading(true);
+    try {
+        const vehicles = await getVehicles();
+        setVehicleList(vehicles);
+    } catch (error) {
+        toast({
+            variant: "destructive",
+            title: "Error loading vehicles",
+            description: "Could not fetch vehicles from the server."
+        });
+    } finally {
+        setIsLoading(false);
+    }
+  }, [toast]);
 
   useEffect(() => {
     loadVehicles();
-    window.addEventListener('storage', loadVehicles);
-    return () => {
-        window.removeEventListener('storage', loadVehicles);
-    };
-  }, []);
-
-  const saveVehiclesToLocalStorage = (vehiclesToSave: Vehicle[]) => {
-      localStorage.setItem('vehicles', JSON.stringify(vehiclesToSave));
-      setVehicleList(vehiclesToSave);
-      window.dispatchEvent(new Event('storage'));
-  };
+  }, [loadVehicles]);
 
   const handleViewDetails = (vehicle: Vehicle) => {
     setVehicleToEdit(vehicle);
@@ -44,35 +48,6 @@ export default function VehiclesPage() {
 
   const handleCloseDialog = () => {
     setVehicleToEdit(null);
-  };
-
-  const handleSaveChanges = (updatedVehicle: Vehicle) => {
-    const updatedVehicles = vehicleList.map(v => 
-        v.id === updatedVehicle.id ? updatedVehicle : v
-    );
-    saveVehiclesToLocalStorage(updatedVehicles);
-
-    toast({
-        title: "Vehicle Updated",
-        description: `${updatedVehicle.brand} ${updatedVehicle.name} has been successfully updated.`,
-    });
-    handleCloseDialog();
-  };
-
-  const handleAddVehicle = (newVehicle: Omit<Vehicle, 'id' | 'status'>) => {
-    const vehicleWithId: Vehicle = {
-        ...newVehicle,
-        id: vehicleList.length > 0 ? Math.max(...vehicleList.map(v => v.id)) + 1 : 1,
-        status: 'Available',
-    };
-    const updatedVehicles = [...vehicleList, vehicleWithId];
-    saveVehiclesToLocalStorage(updatedVehicles);
-
-    toast({
-        title: "Vehicle Added",
-        description: `${vehicleWithId.brand} ${vehicleWithId.name} has been added to the fleet.`
-    });
-    setIsAddDialogOpen(false);
   };
 
   return (
@@ -86,9 +61,7 @@ export default function VehiclesPage() {
                 </SelectTrigger>
                 <SelectContent>
                     <SelectItem value="all">All Brands</SelectItem>
-                    <SelectItem value="maruti">Maruti Suzuki</SelectItem>
-                    <SelectItem value="tata">Tata</SelectItem>
-                    <SelectItem value="honda">Honda</SelectItem>
+                    {/* Add brand items dynamically if needed */}
                 </SelectContent>
             </Select>
             <Select>
@@ -97,12 +70,10 @@ export default function VehiclesPage() {
                 </SelectTrigger>
                 <SelectContent>
                     <SelectItem value="all">All Types</SelectItem>
-                    <SelectItem value="suv">SUV</SelectItem>
-                    <SelectItem value="sedan">Sedan</SelectItem>
-                    <SelectItem value="motorcycle">Motorcycle</SelectItem>
+                    {/* Add type items dynamically if needed */}
                 </SelectContent>
             </Select>
-            <Select>
+             <Select>
                 <SelectTrigger className="w-full md:w-[180px]">
                     <SelectValue placeholder="All Status" />
                 </SelectTrigger>
@@ -118,25 +89,31 @@ export default function VehiclesPage() {
         </CardContent>
       </Card>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {vehicleList.map((vehicle) => (
-          <VehicleCard key={vehicle.id} vehicle={vehicle} onViewDetails={handleViewDetails} />
-        ))}
-      </div>
+      {isLoading ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {Array.from({ length: 8 }).map((_, i) => <Skeleton key={i} className="h-96 w-full" />)}
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {vehicleList.map((vehicle) => (
+            <VehicleCard key={vehicle.id} vehicle={vehicle} onViewDetails={handleViewDetails} />
+            ))}
+        </div>
+      )}
 
        {vehicleToEdit && (
          <AdminVehicleDetailsDialog
             vehicle={vehicleToEdit}
             isOpen={!!vehicleToEdit}
             onClose={handleCloseDialog}
-            onSave={handleSaveChanges}
+            onSave={loadVehicles}
         />
        )}
 
        <AdminAddVehicleDialog 
             isOpen={isAddDialogOpen}
             onClose={() => setIsAddDialogOpen(false)}
-            onSave={handleAddVehicle}
+            onSave={loadVehicles}
        />
     </div>
   );
