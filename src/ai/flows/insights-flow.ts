@@ -8,7 +8,7 @@
  */
 
 import { ai } from '@/ai/genkit';
-import { z } from 'genkit';
+import { z } from 'zod';
 import { bookings, customers, vehicles } from '@/lib/data';
 
 const GenerateInsightsOutputSchema = z.object({
@@ -46,7 +46,13 @@ Here is the data for the company:
 {{{json bookings}}}
 \`\`\`
 
-Based on this data, identify 3 to 5 key trends, patterns, or opportunities. For each insight, provide a clear title, a detailed description of your finding, and a concrete, actionable recommendation that the business can implement. Focus on areas like fleet utilization, customer behavior, revenue optimization, and popular vehicle types.`,
+Based on this data, identify 3 to 5 key trends and status reports. Please include the following types of insights:
+1.  **Customer Vehicle Preference:** Analyze which vehicles are most frequently booked by customers. Mention specific popular models like the Swift if the data supports it.
+2.  **Weekly Status:** Provide a summary of the business performance over the last week (e.g., number of new bookings, revenue).
+3.  **Monthly Status:** Provide a summary of the business performance for the current month.
+4.  **Yearly Status:** Provide a high-level overview of the business performance for the year.
+
+For each insight, provide a clear title, a detailed description, and a concrete recommendation.`,
 });
 
 const generateInsightsFlow = ai.defineFlow(
