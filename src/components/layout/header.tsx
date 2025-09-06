@@ -131,9 +131,6 @@ export function Header({ title }: HeaderProps) {
             </DropdownMenuItem>
             <DropdownMenuItem>Billing</DropdownMenuItem>
             <DropdownMenuItem>Settings</DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link href="/ai-insights">AI Insights</Link>
-            </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => router.push('/login')}>Log out</DropdownMenuItem>
           </DropdownMenuContent>
