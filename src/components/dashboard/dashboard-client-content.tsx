@@ -1,6 +1,7 @@
 
 "use client";
 
+import { useState } from "react";
 import { Bar, BarChart, CartesianGrid, Line, LineChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Legend } from "recharts";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
 import type { Booking, Customer, Vehicle } from "@/lib/data";
@@ -11,7 +12,7 @@ import { Button } from "../ui/button";
 import { Car, Plus } from "lucide-react";
 import Link from "next/link";
 import { AiInsightsSummary } from "./ai-insights-summary";
-
+import { AdminVehicleDetailsDialog } from "@/components/vehicles/admin-vehicle-details-dialog";
 import {
     ChartContainer,
     ChartTooltipContent,
@@ -44,6 +45,16 @@ interface DashboardClientContentProps {
 }
 
 export function DashboardClientContent({ availableVehicles, recentBookings, insights }: DashboardClientContentProps) {
+    const [vehicleToView, setVehicleToView] = useState<Vehicle | null>(null);
+
+    const handleViewDetails = (vehicle: Vehicle) => {
+        setVehicleToView(vehicle);
+    };
+
+    const handleCloseDialog = () => {
+        setVehicleToView(null);
+    };
+
     return (
         <div className="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
             <Card className="lg:col-span-2">
@@ -63,9 +74,7 @@ export function DashboardClientContent({ availableVehicles, recentBookings, insi
                                 {getStatusBadge(v.status)}
                             </div>
                             <p className="text-xl font-semibold mt-3">Rs.{v.pricePerDay.toLocaleString()}/day</p>
-                            <Link href="/vehicles">
-                                <Button className="w-full mt-4">View Details</Button>
-                            </Link>
+                            <Button className="w-full mt-4" onClick={() => handleViewDetails(v)}>View Details</Button>
                         </div>
                     ))}
                 </CardContent>
@@ -134,6 +143,15 @@ export function DashboardClientContent({ availableVehicles, recentBookings, insi
                     </ChartContainer>
                 </CardContent>
             </Card>
+
+            {vehicleToView && (
+                <AdminVehicleDetailsDialog
+                    vehicle={vehicleToView}
+                    isOpen={!!vehicleToView}
+                    onClose={handleCloseDialog}
+                    onSave={() => {}} // Reloading is handled by the page, no action needed here.
+                />
+            )}
         </div>
     )
 }

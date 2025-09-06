@@ -11,8 +11,10 @@ import { StatCard } from "@/components/dashboard/stat-card";
 import { Briefcase, Users, Wallet, Star } from "lucide-react";
 import { CustomerProfileDialog } from "@/components/customers/customer-profile-dialog";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useRouter } from "next/navigation";
 
 export default function CustomersPage() {
+    const router = useRouter();
     const [customerList, setCustomerList] = useState<Customer[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
@@ -44,6 +46,12 @@ export default function CustomersPage() {
     const handleCloseDialog = () => {
         setSelectedCustomer(null);
     };
+
+    const handleNewBooking = () => {
+        // In a real app, this would be a more complex flow.
+        // For this mock, we just navigate to the user vehicle list.
+        router.push('/user/vehicles');
+    }
 
     return (
         <div className="fade-in space-y-6">
@@ -88,7 +96,7 @@ export default function CustomersPage() {
                                 </div>
                                 <div className="flex space-x-2 w-full">
                                     <Button variant="secondary" className="flex-1" onClick={() => handleViewProfile(c)}>View Profile</Button>
-                                    <Button className="flex-1">New Booking</Button>
+                                    <Button className="flex-1" onClick={handleNewBooking}>New Booking</Button>
                                 </div>
                             </CardFooter>
                         </Card>

@@ -1,5 +1,7 @@
 
 
+"use client";
+
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -7,16 +9,28 @@ import { Label } from '@/components/ui/label';
 import { Users, Briefcase } from 'lucide-react';
 import { customers } from '@/lib/data';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { useToast } from '@/hooks/use-toast';
+import { useState } from 'react';
 
 export default function AdminProfilePage() {
+  const { toast } = useToast();
   // Mocking admin details
-  const admin = {
+  const [admin, setAdmin] = useState({
     name: 'Admin User',
     email: 'admin-123@gmail.com',
-  };
+  });
 
   const totalCustomers = customers.length;
   const corporateClients = customers.filter(c => c.type === 'Corporate').length;
+
+  const handleSaveChanges = () => {
+    // In a real app, this would make an API call to update admin details.
+    // For this mock, we just show a toast.
+    toast({
+        title: "Profile Updated",
+        description: "Your admin information has been successfully saved.",
+    });
+  }
 
 
   return (
@@ -51,17 +65,17 @@ export default function AdminProfilePage() {
                 <CardContent className="space-y-4">
                     <div className="grid gap-2">
                         <Label htmlFor="name">Full Name</Label>
-                        <Input id="name" defaultValue={admin.name} />
+                        <Input id="name" value={admin.name} onChange={(e) => setAdmin(prev => ({...prev, name: e.target.value}))}/>
                     </div>
                     <div className="grid gap-2">
                         <Label htmlFor="email">Email</Label>
-                        <Input id="email" type="email" defaultValue={admin.email} />
+                        <Input id="email" type="email" value={admin.email} onChange={(e) => setAdmin(prev => ({...prev, email: e.target.value}))}/>
                     </div>
                     <div className="grid gap-2">
                         <Label htmlFor="password">New Password</Label>
-                        <Input id="password" type="password" />
+                        <Input id="password" type="password" placeholder="Enter a new password"/>
                     </div>
-                    <Button>Save Changes</Button>
+                    <Button onClick={handleSaveChanges}>Save Changes</Button>
                 </CardContent>
             </Card>
         </div>

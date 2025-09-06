@@ -11,8 +11,10 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { StatCard } from '@/components/dashboard/stat-card';
 import Link from 'next/link';
 import { LoadingScreen } from '@/components/common/loader';
+import { useRouter } from 'next/navigation';
 
 export default function UserDashboardPage() {
+  const router = useRouter();
   const [user, setUser] = useState<Customer | null>(null);
   const [userBookings, setUserBookings] = useState<Booking[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -86,9 +88,7 @@ export default function UserDashboardPage() {
             <CardDescription>{user.email}</CardDescription>
           </CardHeader>
           <CardContent className="text-center">
-             <Link href="/user/profile" passHref>
-                <Button className="w-full">View & Edit Profile</Button>
-             </Link>
+             <Button className="w-full" onClick={() => router.push('/user/profile')}>View & Edit Profile</Button>
           </CardContent>
         </Card>
         <Card className="md:col-span-2">
@@ -101,7 +101,8 @@ export default function UserDashboardPage() {
                     <TableHeader>
                         <TableRow>
                             <TableHead>Vehicle</TableHead>
-                            <TableHead>Dates</TableHead>
+                            <TableHead>Start Date</TableHead>
+                            <TableHead>End Date</TableHead>
                             <TableHead>Amount</TableHead>
                             <TableHead>Status</TableHead>
                         </TableRow>
@@ -110,7 +111,8 @@ export default function UserDashboardPage() {
                         {recentUserBookings.map(booking => (
                             <TableRow key={booking.id}>
                                 <TableCell>{booking.vehicle?.brand} {booking.vehicle?.name}</TableCell>
-                                <TableCell>{booking.startDate} to {booking.endDate}</TableCell>
+                                <TableCell>{booking.startDate}</TableCell>
+                                <TableCell>{booking.endDate}</TableCell>
                                 <TableCell>Rs.{booking.amount.toLocaleString()}</TableCell>
                                 <TableCell>{getStatusBadge(booking.status)}</TableCell>
                             </TableRow>
