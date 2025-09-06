@@ -46,14 +46,14 @@ async function updateDocument(collectionName: string, docId: string, data: any) 
 }
 
 // Specific functions for each collection
-export const getVehicles = () => getCollection<Vehicle>('vehicles');
-export const getCustomers = () => getCollection<Customer>('customers');
-export const getBookings = () => getCollection<Booking>('bookings');
+export const getVehicles = async () => getCollection<Vehicle>('vehicles');
+export const getCustomers = async () => getCollection<Customer>('customers');
+export const getBookings = async () => getCollection<Booking>('bookings');
 
-export const addVehicle = (vehicle: Omit<Vehicle, 'id'>) => addDocument('vehicles', vehicle);
-export const addCustomer = (customer: Omit<Customer, 'id'>) => addDocument('customers', customer);
-export const addBooking = (booking: Omit<Booking, 'id'>, id: string) => addDocument('bookings', booking, id);
+export const addVehicle = async (vehicle: Omit<Vehicle, 'id'>) => addDocument('vehicles', vehicle);
+export const addCustomer = async (customer: Omit<Customer, 'id'>) => addDocument('customers', customer);
+export const addBooking = async (booking: Omit<Booking, 'id'>, id: string) => addDocument('bookings', booking, id);
 
-export const updateVehicle = (id: string, data: Partial<Vehicle>) => updateDocument('vehicles', id, data);
-export const updateCustomer = (id: string, data: Partial<Customer>) => updateDocument('customers', id, data);
-export const updateBooking = (id: string, data: Partial<Booking>) => updateDocument('bookings', id, data);
+export const updateVehicle = async (id: string, data: Partial<Vehicle>) => updateDocument('vehicles', id, data);
+export const updateCustomer = async (id: string, data: Partial<Customer>) => updateDocument('customers', id, data);
+export const updateBooking = async (id: string, data: Partial<Booking>) => updateDocument('bookings', id, data);
