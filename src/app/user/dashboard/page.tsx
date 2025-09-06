@@ -1,8 +1,8 @@
 
 "use client";
 
-import { useEffect, useState } from 'react';
-import { customers as initialCustomers, bookings, type Customer, vehicles } from '@/lib/data';
+import { useEffect, useState, useCallback } from 'react';
+import { customers as initialCustomers, bookings as initialBookings, type Customer, type Booking, vehicles } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { User, Star, Wallet, CalendarCheck } from 'lucide-react';
@@ -14,23 +14,39 @@ import { LoadingScreen } from '@/components/common/loader';
 
 export default function UserDashboardPage() {
   const [user, setUser] = useState<Customer | null>(null);
+  const [userBookings, setUserBookings] = useState<Booking[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    // Simulate a loading delay
-    const timer = setTimeout(() => {
-        const userEmail = localStorage.getItem('loggedInUserEmail');
-        if (userEmail) {
-            const storedCustomersRaw = localStorage.getItem('customers');
-            const customers = storedCustomersRaw ? JSON.parse(storedCustomersRaw) : initialCustomers;
-            const currentUser = customers.find((c: Customer) => c.email === userEmail);
-            setUser(currentUser || null);
-        }
-        setIsLoading(false);
-    }, 1500);
+  const fetchData = useCallback(() => {
+    const userEmail = localStorage.getItem('loggedInUserEmail');
+    if (userEmail) {
+        const storedCustomersRaw = localStorage.getItem('customers');
+        const customers: Customer[] = storedCustomersRaw ? JSON.parse(storedCustomersRaw) : initialCustomers;
+        const currentUser = customers.find((c: Customer) => c.email === userEmail);
+        setUser(currentUser || null);
 
-    return () => clearTimeout(timer);
+        if (currentUser) {
+            const storedBookingsRaw = localStorage.getItem('bookings');
+            const allBookings: Booking[] = storedBookingsRaw ? JSON.parse(storedBookingsRaw) : initialBookings;
+            setUserBookings(allBookings.filter(b => b.customerId === currentUser.id));
+        }
+    }
+    setIsLoading(false);
   }, []);
+
+  useEffect(() => {
+    // Simulate a loading delay for better UX
+    const timer = setTimeout(() => {
+        fetchData();
+    }, 1000);
+    
+    window.addEventListener('storage', fetchData);
+
+    return () => {
+        clearTimeout(timer);
+        window.removeEventListener('storage', fetchData);
+    }
+  }, [fetchData]);
 
   if (isLoading) {
     return <LoadingScreen />;
@@ -48,8 +64,7 @@ export default function UserDashboardPage() {
     );
   }
 
-  const userBookings = bookings.filter(b => b.customerId === user.id);
-  const recentUserBookings = userBookings.map(b => ({
+  const recentUserBookings = userBookings.sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime()).map(b => ({
       ...b,
       vehicle: vehicles.find(v => v.id === b.vehicleId)
   })).slice(0, 5);
