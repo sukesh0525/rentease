@@ -57,6 +57,7 @@ export default function UserDashboardPage() {
 
   return (
     <div className="fade-in space-y-6">
+        <h2 className="text-3xl font-bold font-headline text-foreground">Welcome, {user.name}!</h2>
        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <StatCard title="Total Bookings" value={userBookings.length.toString()} icon={<CalendarCheck className="h-5 w-5"/>} />
             <StatCard title="Total Spent" value={`Rs.${user.totalSpent.toLocaleString()}`} icon={<Wallet className="h-5 w-5"/>} />
