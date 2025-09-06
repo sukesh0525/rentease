@@ -15,7 +15,7 @@ import { Button } from '../ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { useEffect, useState } from 'react';
 import type { Customer } from '@/lib/data';
-import { customers } from '@/lib/data';
+import { customers as initialCustomers } from '@/lib/data';
 import { ModeToggle } from '../mode-toggle';
 
 export function UserHeader() {
@@ -27,7 +27,9 @@ export function UserHeader() {
   useEffect(() => {
     const userEmail = localStorage.getItem('loggedInUserEmail');
     if (userEmail) {
-      const currentUser = customers.find(c => c.email === userEmail);
+      const storedCustomersRaw = localStorage.getItem('customers');
+      const customers = storedCustomersRaw ? JSON.parse(storedCustomersRaw) : initialCustomers;
+      const currentUser = customers.find((c: Customer) => c.email === userEmail);
       setUser(currentUser || null);
       if(currentUser) {
         const savedAvatar = localStorage.getItem(`avatar_${userEmail}`);

@@ -2,7 +2,7 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import { bookings, customers, type Customer, vehicles } from '@/lib/data';
+import { customers as initialCustomers, bookings, type Customer, vehicles } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { User, Star, Wallet, CalendarCheck } from 'lucide-react';
@@ -22,8 +22,10 @@ export default function UserDashboardPage() {
     const timer = setTimeout(() => {
         const userEmail = localStorage.getItem('loggedInUserEmail');
         if (userEmail) {
-        const currentUser = customers.find(c => c.email === userEmail);
-        setUser(currentUser || null);
+            const storedCustomersRaw = localStorage.getItem('customers');
+            const customers = storedCustomersRaw ? JSON.parse(storedCustomersRaw) : initialCustomers;
+            const currentUser = customers.find((c: Customer) => c.email === userEmail);
+            setUser(currentUser || null);
         }
         setIsLoading(false);
     }, 1500);

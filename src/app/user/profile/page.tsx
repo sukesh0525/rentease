@@ -2,7 +2,7 @@
 "use client";
 
 import { useEffect, useState, useRef } from 'react';
-import { customers, type Customer, vehicles, bookings } from '@/lib/data';
+import { customers as initialCustomers, type Customer, vehicles, bookings } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -31,7 +31,10 @@ export default function UserProfilePage() {
   useEffect(() => {
     const userEmail = localStorage.getItem('loggedInUserEmail');
     if (userEmail) {
-      const currentUser = customers.find(c => c.email === userEmail);
+      const storedCustomersRaw = localStorage.getItem('customers');
+      const customers = storedCustomersRaw ? JSON.parse(storedCustomersRaw) : initialCustomers;
+      const currentUser = customers.find((c: Customer) => c.email === userEmail);
+
       if (currentUser) {
         setUser(currentUser);
         setName(currentUser.name);
@@ -66,6 +69,9 @@ export default function UserProfilePage() {
   const handleSaveChanges = () => {
     if (!user) return;
 
+    const storedCustomersRaw = localStorage.getItem('customers');
+    let customers: Customer[] = storedCustomersRaw ? JSON.parse(storedCustomersRaw) : initialCustomers;
+    
     const userIndex = customers.findIndex(c => c.id === user.id);
     if (userIndex > -1) {
         customers[userIndex] = {
@@ -74,6 +80,8 @@ export default function UserProfilePage() {
             phone,
             address,
         };
+        localStorage.setItem('customers', JSON.stringify(customers));
+        setUser(customers[userIndex]); // Update local state as well
 
         toast({
             title: "Profile Updated",
