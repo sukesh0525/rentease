@@ -15,10 +15,10 @@ import {
 } from "@/components/ui/dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Label } from "@/components/ui/label";
-import type { Vehicle } from "@/lib/data";
+import type { Vehicle, Customer } from "@/lib/data";
 import { Calendar as CalendarIcon, Wallet } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { customers, bookings } from "@/lib/data";
+import { customers as initialCustomers, bookings } from "@/lib/data";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 
@@ -58,7 +58,10 @@ export function BookingDialog({ vehicle, isOpen, onClose }: BookingDialogProps) 
             return;
         }
 
+        const storedCustomersRaw = localStorage.getItem('customers');
+        const customers: Customer[] = storedCustomersRaw ? JSON.parse(storedCustomersRaw) : initialCustomers;
         const user = customers.find(c => c.email === userEmail);
+        
         if (!user) {
              toast({
                 variant: 'destructive',
