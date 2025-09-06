@@ -8,7 +8,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Star, Edit } from 'lucide-react';
-import { Header } from '@/components/layout/header';
 import { getStatusBadge } from '@/lib/utils.tsx';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Textarea } from '@/components/ui/textarea';
@@ -104,7 +103,6 @@ export default function UserProfilePage() {
   if (isLoading) {
     return (
       <div className="fade-in space-y-6">
-        <Header title="My Profile" />
         <div className="grid gap-6 md:grid-cols-3">
           <Card className="md:col-span-1">
             <CardHeader className="items-center text-center">
@@ -133,7 +131,6 @@ export default function UserProfilePage() {
   if (!user) {
     return (
       <div className="fade-in space-y-6">
-        <Header title="My Profile" />
         <Card>
           <CardContent className="p-6">
             <p>Could not find user data. Please try logging in again.</p>

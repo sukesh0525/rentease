@@ -6,7 +6,6 @@ import { customers as initialCustomers, bookings, type Customer, vehicles } from
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { User, Star, Wallet, CalendarCheck } from 'lucide-react';
-import { Header } from '@/components/layout/header';
 import { getStatusBadge } from '@/lib/utils.tsx';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { StatCard } from '@/components/dashboard/stat-card';
@@ -40,7 +39,6 @@ export default function UserDashboardPage() {
   if (!user) {
     return (
       <div className="fade-in space-y-6">
-        <Header title="Dashboard" />
         <Card>
           <CardContent className="p-6">
             <p>Could not find user data. Please <Link href="/login" className="underline">log in</Link> again.</p>
@@ -59,7 +57,6 @@ export default function UserDashboardPage() {
 
   return (
     <div className="fade-in space-y-6">
-      <Header title={`Welcome, ${user.name.split(' ')[0]}!`} />
        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <StatCard title="Total Bookings" value={userBookings.length.toString()} icon={<CalendarCheck className="h-5 w-5"/>} />
             <StatCard title="Total Spent" value={`Rs.${user.totalSpent.toLocaleString()}`} icon={<Wallet className="h-5 w-5"/>} />
