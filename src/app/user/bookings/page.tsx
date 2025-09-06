@@ -20,12 +20,14 @@ import {
   } from "@/components/ui/dialog"
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 
 export default function UserBookingsPage() {
     const { toast } = useToast();
     const [user, setUser] = useState<Customer | null>(null);
     const [userBookings, setUserBookings] = useState<Booking[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [paymentMethod, setPaymentMethod] = useState('upi');
 
     useEffect(() => {
         const userEmail = localStorage.getItem('loggedInUserEmail');
@@ -141,22 +143,50 @@ export default function UserBookingsPage() {
                                                         Total Amount: Rs.{b.amount.toLocaleString()}
                                                     </DialogDescription>
                                                 </DialogHeader>
-                                                <div className="py-4">
-                                                    <p className="mb-4 font-semibold">Select Payment Method</p>
-                                                    <RadioGroup defaultValue="upi">
-                                                        <div className="flex items-center space-x-2">
-                                                            <RadioGroupItem value="upi" id="upi" />
-                                                            <Label htmlFor="upi">UPI</Label>
+                                                <div className="py-4 space-y-4">
+                                                    <div>
+                                                        <p className="mb-4 font-semibold">Select Payment Method</p>
+                                                        <RadioGroup defaultValue="upi" onValueChange={setPaymentMethod}>
+                                                            <div className="flex items-center space-x-2">
+                                                                <RadioGroupItem value="upi" id="upi" />
+                                                                <Label htmlFor="upi">UPI</Label>
+                                                            </div>
+                                                            <div className="flex items-center space-x-2">
+                                                                <RadioGroupItem value="credit" id="credit" />
+                                                                <Label htmlFor="credit">Credit Card</Label>
+                                                            </div>
+                                                            <div className="flex items-center space-x-2">
+                                                                <RadioGroupItem value="debit" id="debit" />
+                                                                <Label htmlFor="debit">Debit Card</Label>
+                                                            </div>
+                                                        </RadioGroup>
+                                                    </div>
+
+                                                    {paymentMethod === 'upi' && (
+                                                        <div className="space-y-2">
+                                                            <Label htmlFor="upi-id">UPI ID</Label>
+                                                            <Input id="upi-id" placeholder="yourname@bank" />
                                                         </div>
-                                                        <div className="flex items-center space-x-2">
-                                                            <RadioGroupItem value="credit" id="credit" />
-                                                            <Label htmlFor="credit">Credit Card</Label>
+                                                    )}
+
+                                                    {(paymentMethod === 'credit' || paymentMethod === 'debit') && (
+                                                        <div className="space-y-4">
+                                                            <div className="space-y-2">
+                                                                <Label htmlFor="card-number">Card Number</Label>
+                                                                <Input id="card-number" placeholder="0000 0000 0000 0000" />
+                                                            </div>
+                                                            <div className="grid grid-cols-2 gap-4">
+                                                                <div className="space-y-2">
+                                                                    <Label htmlFor="expiry-date">Expiry Date</Label>
+                                                                    <Input id="expiry-date" placeholder="MM/YY" />
+                                                                </div>
+                                                                <div className="space-y-2">
+                                                                    <Label htmlFor="cvc">CVC</Label>
+                                                                    <Input id="cvc" placeholder="123" />
+                                                                </div>
+                                                            </div>
                                                         </div>
-                                                        <div className="flex items-center space-x-2">
-                                                            <RadioGroupItem value="debit" id="debit" />
-                                                            <Label htmlFor="debit">Debit Card</Label>
-                                                        </div>
-                                                    </RadioGroup>
+                                                    )}
                                                 </div>
                                                 <Button onClick={() => handlePayment(b.id)}>Confirm Payment</Button>
                                             </DialogContent>
