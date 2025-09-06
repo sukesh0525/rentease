@@ -87,7 +87,8 @@ export default function BookingsPage() {
                                 <TableHead className="font-semibold">Booking ID</TableHead>
                                 <TableHead className="font-semibold">Customer</TableHead>
                                 <TableHead className="font-semibold">Vehicle</TableHead>
-                                <TableHead className="font-semibold">Dates</TableHead>
+                                <TableHead className="font-semibold">Start Date</TableHead>
+                                <TableHead className="font-semibold">End Date</TableHead>
                                 <TableHead className="font-semibold">Amount</TableHead>
                                 <TableHead className="font-semibold">Status</TableHead>
                                 <TableHead className="font-semibold">Payment</TableHead>
@@ -97,7 +98,7 @@ export default function BookingsPage() {
                         <TableBody>
                             {isLoading ? (
                                 <TableRow>
-                                    <TableCell colSpan={8} className="text-center">Loading bookings...</TableCell>
+                                    <TableCell colSpan={9} className="text-center">Loading bookings...</TableCell>
                                 </TableRow>
                             ) : (
                                 bookingDetails.map(b => (
@@ -105,7 +106,8 @@ export default function BookingsPage() {
                                         <TableCell className="font-medium">{b.id}</TableCell>
                                         <TableCell>{b.customer?.name}</TableCell>
                                         <TableCell>{b.vehicle?.brand} {b.vehicle?.name}</TableCell>
-                                        <TableCell>{b.startDate} to {b.endDate}</TableCell>
+                                        <TableCell>{b.startDate}</TableCell>
+                                        <TableCell>{b.endDate}</TableCell>
                                         <TableCell className="font-semibold">Rs.{b.amount.toLocaleString()}</TableCell>
                                         <TableCell>{getStatusBadge(b.status)}</TableCell>
                                         <TableCell>{getPaymentBadge(b.payment)}</TableCell>
