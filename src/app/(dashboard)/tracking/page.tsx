@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { MapPin, Clock, Car, Info, User } from 'lucide-react';
 import Image from 'next/image';
+import { useState, useEffect } from "react";
 
 type ActiveBooking = Booking & {
     customer: Customer | undefined;
@@ -15,13 +16,47 @@ type ActiveBooking = Booking & {
 
 export default function AdminTrackingPage() {
     
-    const activeBookings = bookings
-        .filter(b => b.status === 'Active')
-        .map(b => ({
-            ...b,
-            customer: customers.find(c => c.id === b.customerId),
-            vehicle: vehicles.find(v => v.id === b.vehicleId),
-        }));
+    const [activeBookings, setActiveBookings] = useState<ActiveBooking[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    
+    const loadTrackingData = () => {
+        setIsLoading(true);
+        // We need to use the data from localStorage if it exists.
+        const storedBookingsRaw = localStorage.getItem('bookings');
+        const storedVehiclesRaw = localStorage.getItem('vehicles');
+        const storedCustomersRaw = localStorage.getItem('customers');
+
+        const allBookings: Booking[] = storedBookingsRaw ? JSON.parse(storedBookingsRaw) : bookings;
+        const allVehicles: Vehicle[] = storedVehiclesRaw ? JSON.parse(storedVehiclesRaw) : vehicles;
+        const allCustomers: Customer[] = storedCustomersRaw ? JSON.parse(storedCustomersRaw) : customers;
+
+        // Find vehicles that are currently rented and have an active booking associated with them.
+        const rentedVehicles = allVehicles.filter(v => v.status === 'Rented');
+        const trackedBookings = rentedVehicles.map(vehicle => {
+            const booking = allBookings.find(b => b.vehicleId === vehicle.id && b.status === 'Active');
+            if (booking) {
+                return {
+                    ...booking,
+                    customer: allCustomers.find(c => c.id === booking.customerId),
+                    vehicle: vehicle,
+                };
+            }
+            return null;
+        }).filter((b): b is ActiveBooking => b !== null);
+
+        setActiveBookings(trackedBookings);
+        setIsLoading(false);
+    }
+    
+    useEffect(() => {
+        loadTrackingData();
+        // Listen for storage changes to update data in real-time
+        window.addEventListener('storage', loadTrackingData);
+        return () => {
+            window.removeEventListener('storage', loadTrackingData);
+        };
+    }, []);
+
 
     return (
         <div className="fade-in space-y-6">
@@ -31,7 +66,9 @@ export default function AdminTrackingPage() {
                     <CardDescription>Monitor all active rentals in real-time.</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                    {activeBookings.length > 0 ? (
+                    {isLoading ? (
+                         <p>Loading tracking data...</p>
+                    ) : activeBookings.length > 0 ? (
                         activeBookings.map(booking => (
                             <Card key={booking.id} className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 shadow-md">
                                 <div className="md:col-span-1">
