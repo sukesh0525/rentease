@@ -8,7 +8,7 @@ import { DashboardClientContent } from "@/components/dashboard/dashboard-client-
 import { useEffect, useState } from "react";
 import { LoadingScreen } from "@/components/common/loader";
 import type { GenerateInsightsOutput } from "@/ai/flows/insights-flow";
-import { getInsightsAction } from "./ai-insights/actions";
+import { getInsightsAction } from "@/app/(dashboard)/ai-insights/actions";
 
 
 export default function DashboardPage() {
