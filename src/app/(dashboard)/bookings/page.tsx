@@ -104,7 +104,7 @@ export default function BookingsPage() {
             </div>
             <Card>
                 <CardHeader>
-                    <CardTitle className="font-headline">All Bookings</CardTitle>
+                    <CardTitle className="font-headline">Bookings</CardTitle>
                 </CardHeader>
                 <CardContent>
                     <Table>
