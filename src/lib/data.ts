@@ -65,11 +65,11 @@ export const customers: Customer[] = [
 ];
 
 export const bookings: Booking[] = [
-    { id: 'BK001', customerId: 1, vehicleId: 1, startDate: '2025-09-15', endDate: '2025-09-22', amount: 8400, status: 'Active', payment: 'Paid', tracking: { status: 'On the move', lastSeen: '5 mins ago', location: 'Hyderabad Ring Road' } },
-    { id: 'BK002', customerId: 2, vehicleId: 3, startDate: '2025-09-18', endDate: '2025-09-24', amount: 14000, status: 'Active', payment: 'Paid', tracking: { status: 'Parked', lastSeen: '45 mins ago', location: 'Vijayawada Benz Circle' } },
-    { id: 'BK003', customerId: 3, vehicleId: 2, startDate: '2025-09-12', endDate: '2025-09-24', amount: 26400, status: 'Completed', payment: 'Paid' },
-    { id: 'BK004', customerId: 4, vehicleId: 6, startDate: '2025-09-20', endDate: '2025-09-23', amount: 10000, status: 'Pending', payment: 'Pending' },
-    { id: 'BK005', customerId: 5, vehicleId: 4, startDate: '2025-09-19', endDate: '2025-09-25', amount: 5600, status: 'Confirmed', payment: 'Paid' },
-    { id: 'BK006', customerId: 2, vehicleId: 7, startDate: '2025-09-25', endDate: '2025-09-30', amount: 3000, status: 'Confirmed', payment: 'Paid' },
-    { id: 'BK007', customerId: 1, vehicleId: 8, startDate: '2025-10-01', endDate: '2025-10-05', amount: 11200, status: 'Confirmed', payment: 'Pending' },
+    { id: 'BK001', customerId: 1, vehicleId: 1, startDate: '2024-05-15', endDate: '2024-05-22', amount: 8400, status: 'Active', payment: 'Paid', tracking: { status: 'On the move', lastSeen: '5 mins ago', location: 'Hyderabad Ring Road' } },
+    { id: 'BK002', customerId: 2, vehicleId: 3, startDate: '2024-05-18', endDate: '2024-05-24', amount: 14000, status: 'Active', payment: 'Paid', tracking: { status: 'Parked', lastSeen: '45 mins ago', location: 'Vijayawada Benz Circle' } },
+    { id: 'BK003', customerId: 3, vehicleId: 2, startDate: '2024-04-12', endDate: '2024-04-24', amount: 26400, status: 'Completed', payment: 'Paid' },
+    { id: 'BK004', customerId: 4, vehicleId: 6, startDate: '2024-06-20', endDate: '2024-06-23', amount: 10000, status: 'Pending', payment: 'Pending' },
+    { id: 'BK005', customerId: 5, vehicleId: 4, startDate: '2024-06-19', endDate: '2024-06-25', amount: 5600, status: 'Confirmed', payment: 'Paid' },
+    { id: 'BK006', customerId: 2, vehicleId: 7, startDate: '2024-06-25', endDate: '2024-06-30', amount: 3000, status: 'Confirmed', payment: 'Paid' },
+    { id: 'BK007', customerId: 1, vehicleId: 8, startDate: '2024-07-01', endDate: '2024-07-05', amount: 11200, status: 'Confirmed', payment: 'Pending' },
 ];
