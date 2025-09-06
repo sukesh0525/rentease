@@ -40,7 +40,7 @@ const chartConfig = {
 interface DashboardClientContentProps {
     availableVehicles: Vehicle[];
     recentBookings: (Booking & { customer: Customer | undefined; vehicle: Vehicle | undefined; })[];
-    insights: GenerateInsightsOutput['insights'];
+    insights: GenerateInsightsOutput['insights'] | null;
 }
 
 export function DashboardClientContent({ availableVehicles, recentBookings, insights }: DashboardClientContentProps) {

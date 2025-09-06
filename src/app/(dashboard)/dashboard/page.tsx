@@ -13,6 +13,7 @@ import { getInsightsAction } from "@/app/(dashboard)/ai-insights/actions";
 
 export default function DashboardPage() {
     const [isLoading, setIsLoading] = useState(true);
+    const [insights, setInsights] = useState<GenerateInsightsOutput['insights'] | null>(null);
     const [dashboardData, setDashboardData] = useState<{
         totalVehicles: number;
         availableNow: number;
@@ -23,10 +24,9 @@ export default function DashboardPage() {
         totalCustomers: number;
         availableVehiclesData: Vehicle[];
         recentBookingsData: (Booking & { customer: Customer | undefined; vehicle: Vehicle | undefined; })[];
-        insightsData: GenerateInsightsOutput['insights'];
     } | null>(null);
 
-    const fetchData = useCallback(async () => {
+    const loadCoreData = useCallback(() => {
         setIsLoading(true);
 
         const storedBookingsRaw = localStorage.getItem('bookings');
@@ -52,48 +52,42 @@ export default function DashboardPage() {
             vehicle: vehicles.find(v => v.id === b.vehicleId),
         }));
         
-        try {
-            const insightsResult = await getInsightsAction();
-            setDashboardData({
-                totalVehicles,
-                availableNow,
-                currentlyRented,
-                underMaintenance,
-                totalRevenue,
-                utilization,
-                totalCustomers,
-                availableVehiclesData,
-                recentBookingsData,
-                insightsData: insightsResult.insights.slice(0, 2),
-            });
-        } catch (e) {
-             console.error("Could not generate insights, using fallback data", e);
-             setDashboardData({
-                totalVehicles,
-                availableNow,
-                currentlyRented,
-                underMaintenance,
-                totalRevenue,
-                utilization,
-                totalCustomers,
-                availableVehiclesData,
-                recentBookingsData,
-                insightsData: [
-                    { title: "Insights Unavailable", description: "AI analysis could not be performed at this time.", recommendation: "Please check back later."}
-                ],
-            });
-        } finally {
-            setIsLoading(false);
-        }
+        setDashboardData({
+            totalVehicles,
+            availableNow,
+            currentlyRented,
+            underMaintenance,
+            totalRevenue,
+            utilization,
+            totalCustomers,
+            availableVehiclesData,
+            recentBookingsData,
+        });
+
+        setIsLoading(false);
+
+    }, []);
+
+    const loadInsights = useCallback(async () => {
+      try {
+        const insightsResult = await getInsightsAction();
+        setInsights(insightsResult.insights.slice(0, 2));
+      } catch (e) {
+        console.error("Could not generate insights, using fallback data", e);
+        setInsights([
+            { title: "Insights Unavailable", description: "AI analysis could not be performed at this time.", recommendation: "Please check back later."}
+        ]);
+      }
     }, []);
 
     useEffect(() => {
-        fetchData();
-        window.addEventListener('storage', fetchData);
+        loadCoreData();
+        loadInsights();
+        window.addEventListener('storage', loadCoreData);
         return () => {
-            window.removeEventListener('storage', fetchData);
+            window.removeEventListener('storage', loadCoreData);
         };
-    }, [fetchData]);
+    }, [loadCoreData, loadInsights]);
 
     if (isLoading || !dashboardData) {
         return <LoadingScreen />
@@ -107,7 +101,6 @@ export default function DashboardPage() {
         underMaintenance,
         availableVehiclesData,
         recentBookingsData,
-        insightsData,
     } = dashboardData;
 
 
@@ -124,7 +117,7 @@ export default function DashboardPage() {
             <DashboardClientContent 
                 availableVehicles={availableVehiclesData}
                 recentBookings={recentBookingsData}
-                insights={insightsData}
+                insights={insights}
             />
         </div>
     );
