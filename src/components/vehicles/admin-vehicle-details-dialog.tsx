@@ -13,13 +13,13 @@ import {
   DialogClose
 } from "@/components/ui/dialog";
 import type { Vehicle } from "@/lib/data";
+import { vehicles as initialVehicles } from "@/lib/data";
 import Image from "next/image";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { Edit } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { updateVehicle } from "@/lib/dataService";
 
 
 interface AdminVehicleDetailsDialogProps {
@@ -52,26 +52,26 @@ export function AdminVehicleDetailsDialog({ vehicle, isOpen, onClose, onSave }: 
     setEditedVehicle(prev => ({ ...prev, [id]: value }));
   };
   
-  const handleSaveChanges = async () => {
+  const handleSaveChanges = () => {
     setIsSaving(true);
-    try {
-        const { id, ...vehicleData } = editedVehicle;
-        await updateVehicle(id, vehicleData);
-        toast({
-            title: "Vehicle Updated",
-            description: "The vehicle details have been saved."
-        });
-        onSave();
-        onClose();
-    } catch (error) {
-        toast({
-            variant: "destructive",
-            title: "Update Failed",
-            description: "Could not save vehicle details."
-        });
-    } finally {
-        setIsSaving(false);
+    const storedVehiclesRaw = localStorage.getItem('vehicles');
+    let currentVehicles: Vehicle[] = storedVehiclesRaw ? JSON.parse(storedVehiclesRaw) : initialVehicles;
+
+    const vehicleIndex = currentVehicles.findIndex(v => v.id === editedVehicle.id);
+    if (vehicleIndex > -1) {
+        currentVehicles[vehicleIndex] = editedVehicle;
     }
+
+    localStorage.setItem('vehicles', JSON.stringify(currentVehicles));
+    window.dispatchEvent(new Event('storage'));
+    
+    toast({
+        title: "Vehicle Updated",
+        description: "The vehicle details have been saved."
+    });
+    onSave();
+    onClose();
+    setIsSaving(false);
   };
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {

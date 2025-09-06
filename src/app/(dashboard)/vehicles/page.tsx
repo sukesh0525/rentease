@@ -1,8 +1,9 @@
 
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import type { Vehicle } from "@/lib/data";
+import { vehicles as initialVehicles } from "@/lib/data";
 import { VehicleCard } from "@/components/vehicles/vehicle-card";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -11,8 +12,6 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { AdminVehicleDetailsDialog } from "@/components/vehicles/admin-vehicle-details-dialog";
 import { AdminAddVehicleDialog } from "@/components/vehicles/admin-add-vehicle-dialog";
-import { getVehicles } from "@/lib/dataService";
-import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function VehiclesPage() {
@@ -20,27 +19,21 @@ export default function VehiclesPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [vehicleToEdit, setVehicleToEdit] = useState<Vehicle | null>(null);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
-  const { toast } = useToast();
 
-  const loadVehicles = useCallback(async () => {
+  const loadVehicles = () => {
     setIsLoading(true);
-    try {
-        const vehicles = await getVehicles();
-        setVehicleList(vehicles);
-    } catch (error) {
-        toast({
-            variant: "destructive",
-            title: "Error loading vehicles",
-            description: "Could not fetch vehicles from the server."
-        });
-    } finally {
-        setIsLoading(false);
-    }
-  }, [toast]);
+    const storedVehicles = localStorage.getItem('vehicles');
+    setVehicleList(storedVehicles ? JSON.parse(storedVehicles) : initialVehicles);
+    setIsLoading(false);
+  };
 
   useEffect(() => {
     loadVehicles();
-  }, [loadVehicles]);
+    window.addEventListener('storage', loadVehicles);
+    return () => {
+        window.removeEventListener('storage', loadVehicles);
+    };
+  }, []);
 
   const handleViewDetails = (vehicle: Vehicle) => {
     setVehicleToEdit(vehicle);

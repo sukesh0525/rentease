@@ -6,11 +6,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { getPaymentBadge, getStatusBadge } from "@/lib/utils.tsx";
 import { StatCard } from "@/components/dashboard/stat-card";
+import { bookings as initialBookings, customers as initialCustomers, vehicles as initialVehicles } from "@/lib/data";
 import { Book, CalendarCheck, Check, DollarSign, Wallet, X } from "lucide-react";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import type { Booking, Customer, Vehicle } from "@/lib/data";
-import { getBookings, getCustomers, getVehicles, updateBooking } from "@/lib/dataService";
 
 export default function BookingsPage() {
     const { toast } = useToast();
@@ -19,31 +19,25 @@ export default function BookingsPage() {
     const [vehicles, setVehicles] = useState<Vehicle[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
-    const loadBookings = useCallback(async () => {
+    const loadBookings = () => {
         setIsLoading(true);
-        try {
-            const [bookingsData, customersData, vehiclesData] = await Promise.all([
-                getBookings(),
-                getCustomers(),
-                getVehicles()
-            ]);
-            setCurrentBookings(bookingsData);
-            setCustomers(customersData);
-            setVehicles(vehiclesData);
-        } catch (error) {
-            toast({
-                variant: 'destructive',
-                title: 'Error loading data',
-                description: 'Could not fetch data from the server.'
-            });
-        } finally {
-            setIsLoading(false);
-        }
-    }, [toast]);
+        const storedBookings = localStorage.getItem('bookings');
+        const storedCustomers = localStorage.getItem('customers');
+        const storedVehicles = localStorage.getItem('vehicles');
+
+        setCurrentBookings(storedBookings ? JSON.parse(storedBookings) : initialBookings);
+        setCustomers(storedCustomers ? JSON.parse(storedCustomers) : initialCustomers);
+        setVehicles(storedVehicles ? JSON.parse(storedVehicles) : initialVehicles);
+        setIsLoading(false);
+    };
 
     useEffect(() => {
         loadBookings();
-    }, [loadBookings]);
+        window.addEventListener('storage', loadBookings);
+        return () => {
+            window.removeEventListener('storage', loadBookings);
+        };
+    }, []);
 
     const bookingDetails = currentBookings.map(b => {
         const customer = customers.find(c => c.id === b.customerId);
@@ -56,23 +50,22 @@ export default function BookingsPage() {
     const totalRevenue = currentBookings.reduce((sum, b) => sum + b.amount, 0);
     const avgBookingValue = totalRevenue > 0 ? totalRevenue / totalBookings : 0;
 
-    const handleBookingAction = async (bookingId: string, newStatus: 'Confirmed' | 'Cancelled') => {
-        try {
-            await updateBooking(bookingId, { status: newStatus });
-            setCurrentBookings(prev => 
-                prev.map(b => (b.id === bookingId ? { ...b, status: newStatus } : b))
-            );
-            toast({
-                title: `Booking ${newStatus}`,
-                description: `The booking request ${bookingId} has been ${newStatus.toLowerCase()}.`,
-            });
-        } catch (error) {
-            toast({
-                variant: 'destructive',
-                title: 'Update Failed',
-                description: 'Could not update the booking status.',
-            });
+    const handleBookingAction = (bookingId: string, newStatus: 'Confirmed' | 'Cancelled') => {
+        let allBookings: Booking[] = JSON.parse(localStorage.getItem('bookings') || '[]');
+        const bookingIndex = allBookings.findIndex(b => b.id === bookingId);
+        if (bookingIndex > -1) {
+            allBookings[bookingIndex].status = newStatus;
         }
+
+        localStorage.setItem('bookings', JSON.stringify(allBookings));
+        // This is a hack to notify other tabs/windows.
+        window.dispatchEvent(new Event('storage'));
+        loadBookings(); // Reload data on current page
+
+        toast({
+            title: `Booking ${newStatus}`,
+            description: `The booking request ${bookingId} has been ${newStatus.toLowerCase()}.`,
+        });
     };
 
     return (
@@ -140,4 +133,3 @@ export default function BookingsPage() {
         </div>
     );
 }
-

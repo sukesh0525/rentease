@@ -12,12 +12,12 @@ import {
   DialogFooter
 } from "@/components/ui/dialog";
 import type { Vehicle } from "@/lib/data";
+import { vehicles as initialVehicles } from "@/lib/data";
 import Image from "next/image";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { Edit, UploadCloud } from "lucide-react";
-import { addVehicle } from "@/lib/dataService";
 import { useToast } from "@/hooks/use-toast";
 
 interface AdminAddVehicleDialogProps {
@@ -56,7 +56,7 @@ export function AdminAddVehicleDialog({ isOpen, onClose, onSave }: AdminAddVehic
     setNewVehicle(prev => ({ ...prev, [id]: value }));
   };
   
-  const handleSaveChanges = async () => {
+  const handleSaveChanges = () => {
     if (!newVehicle.brand || !newVehicle.name || !newVehicle.plate) {
         toast({
             variant: "destructive",
@@ -66,27 +66,26 @@ export function AdminAddVehicleDialog({ isOpen, onClose, onSave }: AdminAddVehic
         return;
     }
     setIsSaving(true);
-    try {
-        const vehicleData = {
-            ...newVehicle,
-            status: 'Available' as const,
-        };
-        await addVehicle(vehicleData);
-        toast({
-            title: "Vehicle Added",
-            description: `${newVehicle.brand} ${newVehicle.name} has been added to the fleet.`
-        });
-        onSave(); // This will trigger a reload on the vehicles page
-        handleDialogClose();
-    } catch (error) {
-        toast({
-            variant: "destructive",
-            title: "Save Failed",
-            description: "Could not add the new vehicle."
-        });
-    } finally {
-        setIsSaving(false);
-    }
+    const storedVehiclesRaw = localStorage.getItem('vehicles');
+    const currentVehicles = storedVehiclesRaw ? JSON.parse(storedVehiclesRaw) : initialVehicles;
+
+    const newVehicleWithId: Vehicle = {
+        ...newVehicle,
+        id: Math.max(...currentVehicles.map((v: Vehicle) => v.id), 0) + 1,
+        status: 'Available'
+    };
+
+    const updatedVehicles = [...currentVehicles, newVehicleWithId];
+    localStorage.setItem('vehicles', JSON.stringify(updatedVehicles));
+    window.dispatchEvent(new Event('storage'));
+
+    toast({
+        title: "Vehicle Added",
+        description: `${newVehicle.brand} ${newVehicle.name} has been added to the fleet.`
+    });
+    onSave(); // This will trigger a reload on the vehicles page
+    handleDialogClose();
+    setIsSaving(false);
   };
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {

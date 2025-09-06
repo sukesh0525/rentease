@@ -16,11 +16,11 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Label } from "@/components/ui/label";
 import type { Vehicle, Customer, Booking } from "@/lib/data";
+import { bookings as initialBookings, customers as initialCustomers } from "@/lib/data";
 import { Calendar as CalendarIcon, Wallet } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
-import { getCustomers, addBooking } from "@/lib/dataService";
 
 interface BookingDialogProps {
   vehicle: Vehicle;
@@ -46,7 +46,7 @@ export function BookingDialog({ vehicle, isOpen, onClose }: BookingDialogProps) 
         }
     }, [dateRange, vehicle.pricePerDay]);
 
-    const handleBooking = async () => {
+    const handleBooking = () => {
         const userEmail = localStorage.getItem('loggedInUserEmail');
         if (!userEmail) {
             toast({
@@ -58,7 +58,8 @@ export function BookingDialog({ vehicle, isOpen, onClose }: BookingDialogProps) 
             return;
         }
 
-        const customers: Customer[] = await getCustomers();
+        const storedCustomersRaw = localStorage.getItem('customers');
+        const customers: Customer[] = storedCustomersRaw ? JSON.parse(storedCustomersRaw) : initialCustomers;
         const user = customers.find(c => c.email === userEmail);
         
         if (!user) {
@@ -80,8 +81,11 @@ export function BookingDialog({ vehicle, isOpen, onClose }: BookingDialogProps) 
             return;
         }
         
-        const newBookingId = `BK${Math.floor(1000 + Math.random() * 9000)}`;
-        const newBooking: Omit<Booking, 'id'> = {
+        const storedBookingsRaw = localStorage.getItem('bookings');
+        const currentBookings: Booking[] = storedBookingsRaw ? JSON.parse(storedBookingsRaw) : initialBookings;
+
+        const newBooking: Booking = {
+            id: `BK${Math.floor(1000 + Math.random() * 9000)}`,
             customerId: user.id,
             vehicleId: vehicle.id,
             startDate: format(dateRange.from, 'yyyy-MM-dd'),
@@ -91,21 +95,18 @@ export function BookingDialog({ vehicle, isOpen, onClose }: BookingDialogProps) 
             payment: 'Pending',
         };
 
-        try {
-            await addBooking(newBooking, newBookingId);
-            toast({
-                title: 'Booking Request Sent!',
-                description: 'Your request has been sent to the admin for approval.',
-            });
-            onClose();
-            router.push('/user/bookings');
-        } catch (error) {
-             toast({
-                variant: 'destructive',
-                title: 'Booking Failed',
-                description: 'Could not send booking request. Please try again.',
-            });
-        }
+        const updatedBookings = [...currentBookings, newBooking];
+        localStorage.setItem('bookings', JSON.stringify(updatedBookings));
+
+        // This is a hack to notify other tabs/windows.
+        window.dispatchEvent(new Event('storage'));
+
+        toast({
+            title: 'Booking Request Sent!',
+            description: 'Your request has been sent to the admin for approval.',
+        });
+        onClose();
+        router.push('/user/bookings');
     };
 
   return (

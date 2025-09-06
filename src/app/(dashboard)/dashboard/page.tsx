@@ -3,13 +3,12 @@
 
 import { StatCard } from "@/components/dashboard/stat-card";
 import { Car, DollarSign, Gauge, Users, Wrench } from "lucide-react";
-import type { Booking, Customer, Vehicle } from "@/lib/data";
+import { bookings as initialBookings, customers as initialCustomers, vehicles as initialVehicles, type Booking, type Customer, type Vehicle } from "@/lib/data";
 import { DashboardClientContent } from "@/components/dashboard/dashboard-client-content";
 import { useEffect, useState, useCallback } from "react";
 import { LoadingScreen } from "@/components/common/loader";
 import type { GenerateInsightsOutput } from "@/ai/flows/insights-flow";
 import { getInsightsAction } from "@/app/(dashboard)/ai-insights/actions";
-import { getBookings, getCustomers, getVehicles } from "@/lib/dataService";
 
 
 export default function DashboardPage() {
@@ -29,10 +28,15 @@ export default function DashboardPage() {
 
     const fetchData = useCallback(async () => {
         setIsLoading(true);
-        const bookings = await getBookings();
-        const vehicles = await getVehicles();
-        const customers = await getCustomers();
 
+        const storedBookingsRaw = localStorage.getItem('bookings');
+        const storedVehiclesRaw = localStorage.getItem('vehicles');
+        const storedCustomersRaw = localStorage.getItem('customers');
+
+        const bookings: Booking[] = storedBookingsRaw ? JSON.parse(storedBookingsRaw) : initialBookings;
+        const vehicles: Vehicle[] = storedVehiclesRaw ? JSON.parse(storedVehiclesRaw) : initialVehicles;
+        const customers: Customer[] = storedCustomersRaw ? JSON.parse(storedCustomersRaw) : initialCustomers;
+        
         const totalVehicles = vehicles.length;
         const availableNow = vehicles.filter(v => v.status === 'Available').length;
         const currentlyRented = vehicles.filter(v => v.status === 'Rented').length;
@@ -85,10 +89,10 @@ export default function DashboardPage() {
 
     useEffect(() => {
         fetchData();
-        // This is a simple way to refetch data periodically.
-        // For a real-time app, you'd use Firestore listeners.
-        const interval = setInterval(fetchData, 30000); // Refresh every 30 seconds
-        return () => clearInterval(interval);
+        window.addEventListener('storage', fetchData);
+        return () => {
+            window.removeEventListener('storage', fetchData);
+        };
     }, [fetchData]);
 
     if (isLoading || !dashboardData) {

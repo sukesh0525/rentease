@@ -13,12 +13,11 @@ import {
 } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import type { Customer, Booking, Vehicle } from "@/lib/data";
+import { bookings as initialBookings, vehicles as initialVehicles } from "@/lib/data";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { getStatusBadge } from "@/lib/utils.tsx";
 import { Star, Calendar, Wallet } from "lucide-react";
-import { useEffect, useState, useCallback } from "react";
-import { getBookings, getVehicles } from "@/lib/dataService";
-import { useToast } from "@/hooks/use-toast";
+import { useEffect, useState } from "react";
 
 interface CustomerProfileDialogProps {
   customer: Customer;
@@ -29,32 +28,26 @@ interface CustomerProfileDialogProps {
 export function CustomerProfileDialog({ customer, isOpen, onClose }: CustomerProfileDialogProps) {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
-  const { toast } = useToast();
 
-  const loadData = useCallback(async () => {
+  const loadData = () => {
     if (!customer) return;
-    try {
-        const [bookingsData, vehiclesData] = await Promise.all([
-            getBookings(),
-            getVehicles()
-        ]);
-        const customerBookings = bookingsData.filter(b => b.customerId === customer.id);
-        setBookings(customerBookings);
-        setVehicles(vehiclesData);
-    } catch (error) {
-        toast({
-            variant: "destructive",
-            title: "Error",
-            description: "Could not load booking history."
-        })
-    }
-  }, [customer, toast]);
+
+    const storedBookings = localStorage.getItem('bookings');
+    const allBookings = storedBookings ? JSON.parse(storedBookings) : initialBookings;
+    const customerBookings = allBookings.filter((b: Booking) => b.customerId === customer.id);
+    setBookings(customerBookings);
+
+    const storedVehicles = localStorage.getItem('vehicles');
+    setVehicles(storedVehicles ? JSON.parse(storedVehicles) : initialVehicles);
+  };
 
   useEffect(() => {
     if (isOpen) {
         loadData();
     }
-  }, [isOpen, loadData]);
+    window.addEventListener('storage', loadData);
+    return () => window.removeEventListener('storage', loadData);
+  }, [isOpen, customer]);
 
   if (!customer) return null;
 

@@ -1,43 +1,36 @@
 
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import type { Customer } from "@/lib/data";
+import { customers as initialCustomers } from "@/lib/data";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { StatCard } from "@/components/dashboard/stat-card";
 import { Briefcase, Users, Wallet, Star } from "lucide-react";
 import { CustomerProfileDialog } from "@/components/customers/customer-profile-dialog";
-import { getCustomers } from "@/lib/dataService";
-import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function CustomersPage() {
     const [customerList, setCustomerList] = useState<Customer[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
-    const { toast } = useToast();
 
-    const loadCustomers = useCallback(async () => {
+    const loadCustomers = () => {
         setIsLoading(true);
-        try {
-            const customers = await getCustomers();
-            setCustomerList(customers);
-        } catch (error) {
-            toast({
-                variant: 'destructive',
-                title: 'Error loading customers',
-                description: 'Could not fetch customer data from the server.'
-            });
-        } finally {
-            setIsLoading(false);
-        }
-    }, [toast]);
+        const storedCustomers = localStorage.getItem('customers');
+        setCustomerList(storedCustomers ? JSON.parse(storedCustomers) : initialCustomers);
+        setIsLoading(false);
+    };
 
     useEffect(() => {
         loadCustomers();
-    }, [loadCustomers]);
+        window.addEventListener('storage', loadCustomers);
+        return () => {
+            window.removeEventListener('storage', loadCustomers);
+        };
+    }, []);
 
     const totalCustomers = customerList.length;
     const corporateClients = customerList.filter(c => c.type === 'Corporate').length;
