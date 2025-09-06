@@ -10,11 +10,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { AdminVehicleDetailsDialog } from "@/components/vehicles/admin-vehicle-details-dialog";
+import { AdminAddVehicleDialog } from "@/components/vehicles/admin-add-vehicle-dialog";
 import { useToast } from "@/hooks/use-toast";
 
 export default function VehiclesPage() {
   const [vehicleList, setVehicleList] = useState(vehicles);
   const [vehicleToEdit, setVehicleToEdit] = useState<Vehicle | null>(null);
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const { toast } = useToast();
 
   const handleViewDetails = (vehicle: Vehicle) => {
@@ -36,6 +38,20 @@ export default function VehiclesPage() {
         description: `${updatedVehicle.brand} ${updatedVehicle.name} has been successfully updated.`,
     });
     handleCloseDialog();
+  };
+
+  const handleAddVehicle = (newVehicle: Omit<Vehicle, 'id' | 'status'>) => {
+    const vehicleWithId: Vehicle = {
+        ...newVehicle,
+        id: vehicleList.length > 0 ? Math.max(...vehicleList.map(v => v.id)) + 1 : 1,
+        status: 'Available',
+    };
+    setVehicleList(prev => [...prev, vehicleWithId]);
+    toast({
+        title: "Vehicle Added",
+        description: `${vehicleWithId.brand} ${vehicleWithId.name} has been added to the fleet.`
+    });
+    setIsAddDialogOpen(false);
   };
 
   return (
@@ -75,7 +91,7 @@ export default function VehiclesPage() {
                     <SelectItem value="rented">Rented</SelectItem>
                 </SelectContent>
             </Select>
-            <Button className="w-full md:w-auto">
+            <Button className="w-full md:w-auto" onClick={() => setIsAddDialogOpen(true)}>
                 <Plus className="mr-2 h-4 w-4" /> Add Vehicle
             </Button>
         </CardContent>
@@ -95,6 +111,12 @@ export default function VehiclesPage() {
             onSave={handleSaveChanges}
         />
        )}
+
+       <AdminAddVehicleDialog 
+            isOpen={isAddDialogOpen}
+            onClose={() => setIsAddDialogOpen(false)}
+            onSave={handleAddVehicle}
+       />
     </div>
   );
 }
