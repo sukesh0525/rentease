@@ -11,7 +11,7 @@ import { Briefcase, Users, Wallet, Star } from "lucide-react";
 import { CustomerProfileDialog } from "@/components/customers/customer-profile-dialog";
 
 export default function CustomersPage() {
-    const [customerList, setCustomerList] = useState<Customer[]>(initialCustomers);
+    const [customerList, setCustomerList] = useState<Customer[]>([]);
     const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
 
     const loadCustomers = () => {

@@ -14,7 +14,7 @@ import { AdminAddVehicleDialog } from "@/components/vehicles/admin-add-vehicle-d
 import { useToast } from "@/hooks/use-toast";
 
 export default function VehiclesPage() {
-  const [vehicleList, setVehicleList] = useState<Vehicle[]>(initialVehicles);
+  const [vehicleList, setVehicleList] = useState<Vehicle[]>([]);
   const [vehicleToEdit, setVehicleToEdit] = useState<Vehicle | null>(null);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const { toast } = useToast();
