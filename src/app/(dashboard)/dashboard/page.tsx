@@ -4,8 +4,9 @@ import { Car, DollarSign, Gauge, Users, Wrench } from "lucide-react";
 import { bookings, customers, vehicles } from "@/lib/data";
 import { DashboardClientContent } from "@/components/dashboard/dashboard-client-content";
 import { Header } from "@/components/layout/header";
+import { generateInsights } from "@/ai/flows/insights-flow";
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
     const totalVehicles = vehicles.length;
     const availableNow = vehicles.filter(v => v.status === 'Available').length;
     const currentlyRented = vehicles.filter(v => v.status === 'Rented').length;
@@ -19,6 +20,8 @@ export default function DashboardPage() {
         customer: customers.find(c => c.id === b.customerId),
         vehicle: vehicles.find(v => v.id === b.vehicleId),
     }));
+
+    const insightsData = await generateInsights();
 
 
     return (
@@ -34,6 +37,7 @@ export default function DashboardPage() {
             <DashboardClientContent 
                 availableVehicles={availableVehiclesData}
                 recentBookings={recentBookingsData}
+                insights={insightsData.insights.slice(0, 2)}
             />
         </div>
     );

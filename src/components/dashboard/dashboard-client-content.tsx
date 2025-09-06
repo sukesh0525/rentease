@@ -4,11 +4,13 @@
 import { Bar, BarChart, CartesianGrid, Line, LineChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Legend } from "recharts";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
 import type { Booking, Customer, Vehicle } from "@/lib/data";
+import type { GenerateInsightsOutput } from "@/ai/flows/insights-flow";
 import { getStatusBadge } from "@/lib/utils.tsx";
 import Image from "next/image";
 import { Button } from "../ui/button";
 import { Car, Plus } from "lucide-react";
 import Link from "next/link";
+import { AiInsightsSummary } from "./ai-insights-summary";
 
 import {
     ChartContainer,
@@ -38,9 +40,10 @@ const chartConfig = {
 interface DashboardClientContentProps {
     availableVehicles: Vehicle[];
     recentBookings: (Booking & { customer: Customer | undefined; vehicle: Vehicle | undefined; })[];
+    insights: GenerateInsightsOutput['insights'];
 }
 
-export function DashboardClientContent({ availableVehicles, recentBookings }: DashboardClientContentProps) {
+export function DashboardClientContent({ availableVehicles, recentBookings, insights }: DashboardClientContentProps) {
     return (
         <div className="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
             <Card className="lg:col-span-2">
@@ -109,6 +112,8 @@ export function DashboardClientContent({ availableVehicles, recentBookings }: Da
                 </Card>
             </div>
             
+            <AiInsightsSummary insights={insights} />
+
             <Card className="lg:col-span-3">
                 <CardHeader>
                     <CardTitle className="font-headline">Fleet Performance</CardTitle>
