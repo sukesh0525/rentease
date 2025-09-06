@@ -1,16 +1,30 @@
 
-import { customers } from "@/lib/data";
+"use client";
+
+import { useState } from "react";
+import { customers, type Customer } from "@/lib/data";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { StatCard } from "@/components/dashboard/stat-card";
 import { Briefcase, Users, Wallet, Star } from "lucide-react";
+import { CustomerProfileDialog } from "@/components/customers/customer-profile-dialog";
 
 export default function CustomersPage() {
+    const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
+
     const totalCustomers = customers.length;
     const corporateClients = customers.filter(c => c.type === 'Corporate').length;
     const totalSpentAll = customers.reduce((acc, c) => acc + c.totalSpent, 0);
     const avgCustomerValue = totalCustomers > 0 ? totalSpentAll / totalCustomers : 0;
+
+    const handleViewProfile = (customer: Customer) => {
+        setSelectedCustomer(customer);
+    };
+
+    const handleCloseDialog = () => {
+        setSelectedCustomer(null);
+    };
 
     return (
         <div className="fade-in space-y-6">
@@ -51,13 +65,20 @@ export default function CustomersPage() {
                                 </div>
                             </div>
                             <div className="flex space-x-2 w-full">
-                                <Button variant="secondary" className="flex-1">View Profile</Button>
+                                <Button variant="secondary" className="flex-1" onClick={() => handleViewProfile(c)}>View Profile</Button>
                                 <Button className="flex-1">New Booking</Button>
                             </div>
                         </CardFooter>
                     </Card>
                 ))}
             </div>
+             {selectedCustomer && (
+                <CustomerProfileDialog 
+                    customer={selectedCustomer}
+                    isOpen={!!selectedCustomer}
+                    onClose={handleCloseDialog}
+                />
+            )}
         </div>
     );
 }
