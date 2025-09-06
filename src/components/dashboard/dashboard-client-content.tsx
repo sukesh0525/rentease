@@ -8,6 +8,7 @@ import { getStatusBadge } from "@/lib/utils.tsx";
 import Image from "next/image";
 import { Button } from "../ui/button";
 import { Car, Plus } from "lucide-react";
+import Link from "next/link";
 
 import {
     ChartContainer,
@@ -59,7 +60,9 @@ export function DashboardClientContent({ availableVehicles, recentBookings }: Da
                                 {getStatusBadge(v.status)}
                             </div>
                             <p className="text-xl font-semibold mt-3">Rs.{v.pricePerDay.toLocaleString()}/day</p>
-                            <Button className="w-full mt-4">View Details</Button>
+                            <Link href="/vehicles">
+                                <Button className="w-full mt-4">View Details</Button>
+                            </Link>
                         </div>
                     ))}
                 </CardContent>
@@ -90,10 +93,18 @@ export function DashboardClientContent({ availableVehicles, recentBookings }: Da
                         <CardTitle className="font-headline">Quick Actions</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-3">
-                        <Button className="w-full"><Plus className="mr-2 h-4 w-4"/> New Booking</Button>
-                        <Button variant="secondary" className="w-full">Add Vehicle</Button>
-                        <Button variant="secondary" className="w-full">Add Customer</Button>
-                        <Button variant="secondary" className="w-full">Generate Report</Button>
+                        <Link href="/bookings" passHref>
+                            <Button className="w-full"><Plus className="mr-2 h-4 w-4"/> New Booking</Button>
+                        </Link>
+                         <Link href="/vehicles" passHref>
+                            <Button variant="secondary" className="w-full">Add Vehicle</Button>
+                        </Link>
+                         <Link href="/customers" passHref>
+                            <Button variant="secondary" className="w-full">Add Customer</Button>
+                        </Link>
+                        <Link href="/reports" passHref>
+                            <Button variant="secondary" className="w-full">Generate Report</Button>
+                        </Link>
                     </CardContent>
                 </Card>
             </div>
