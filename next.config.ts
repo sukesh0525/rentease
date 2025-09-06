@@ -47,6 +47,10 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'media.zigcdn.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'cdn-icons-png.flaticon.com',
+      },
     ],
   },
 };

@@ -49,7 +49,7 @@ export default function SignupPage() {
         bookingsCount: 0,
         rating: 0,
         type: 'Individual' as const,
-        avatar: `https://i.pravatar.cc/150?u=${email}`
+        avatar: 'https://cdn-icons-png.flaticon.com/512/149/149071.png'
     };
     
     const updatedCustomers = [...currentCustomers, newUser];
