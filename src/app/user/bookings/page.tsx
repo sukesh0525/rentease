@@ -17,6 +17,8 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
+    DialogFooter,
+    DialogClose,
   } from "@/components/ui/dialog"
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
@@ -192,7 +194,29 @@ export default function UserBookingsPage() {
                                             </DialogContent>
                                         </Dialog>
                                     ) : (
-                                         <Button variant="link" className="p-0 h-auto" disabled={b.status !== 'Completed'}>View Invoice</Button>
+                                         <Dialog>
+                                            <DialogTrigger asChild>
+                                                <Button variant="link" className="p-0 h-auto" disabled={b.payment !== 'Paid'}>View Invoice</Button>
+                                            </DialogTrigger>
+                                            <DialogContent>
+                                                <DialogHeader>
+                                                <DialogTitle>Payment Confirmed</DialogTitle>
+                                                <DialogDescription>
+                                                    Your payment for this booking has been successfully processed. Thank you!
+                                                </DialogDescription>
+                                                </DialogHeader>
+                                                <div className="py-4 text-sm">
+                                                    <p><strong>Booking ID:</strong> {b.id}</p>
+                                                    <p><strong>Vehicle:</strong> {b.vehicle?.brand} {b.vehicle?.name}</p>
+                                                    <p><strong>Amount Paid:</strong> Rs. {b.amount.toLocaleString()}</p>
+                                                </div>
+                                                <DialogFooter>
+                                                    <DialogClose asChild>
+                                                        <Button type="button" variant="secondary">Close</Button>
+                                                    </DialogClose>
+                                                </DialogFooter>
+                                            </DialogContent>
+                                        </Dialog>
                                     )}
                                 </TableCell>
                             </TableRow>
