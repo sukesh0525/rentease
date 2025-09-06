@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Users, Briefcase } from 'lucide-react';
-import { customers } from '@/lib/storage';
+import { customers } from '@/lib/data';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 
 export default function AdminProfilePage() {
