@@ -69,6 +69,8 @@ export function Header({ title }: HeaderProps) {
       
       localStorage.setItem('bookings', JSON.stringify(allBookings));
       loadPendingBookings(); // a bit inefficient but ensures state is sync
+      // This is a hack to notify other tabs/windows.
+      window.dispatchEvent(new Event('storage'));
       
       toast({
           title: `Booking ${newStatus}`,

@@ -14,20 +14,27 @@ import type { Booking } from "@/lib/data";
 
 export default function BookingsPage() {
     const { toast } = useToast();
-    const [currentBookings, setCurrentBookings] = useState<Booking[]>(initialBookings);
+    const [currentBookings, setCurrentBookings] = useState<Booking[]>([]);
+
+    const loadBookings = () => {
+        const storedBookings = localStorage.getItem('bookings');
+        setCurrentBookings(storedBookings ? JSON.parse(storedBookings) : initialBookings);
+    };
 
     useEffect(() => {
-        const storedBookings = localStorage.getItem('bookings');
-        if (storedBookings) {
-            setCurrentBookings(JSON.parse(storedBookings));
-        } else {
-            localStorage.setItem('bookings', JSON.stringify(initialBookings));
-        }
+        loadBookings();
+        // Listen for changes from other tabs/windows
+        window.addEventListener('storage', loadBookings);
+        return () => {
+            window.removeEventListener('storage', loadBookings);
+        };
     }, []);
 
     const saveBookingsToLocalStorage = (bookingsToSave: Booking[]) => {
         localStorage.setItem('bookings', JSON.stringify(bookingsToSave));
         setCurrentBookings(bookingsToSave);
+        // This is a hack to notify other tabs/windows.
+        window.dispatchEvent(new Event('storage'));
     };
 
     const bookingDetails = currentBookings.map(b => {
