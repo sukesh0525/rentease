@@ -13,7 +13,7 @@ import { cn } from '@/lib/utils';
 
 const navItems = [
   { href: '/user/dashboard', label: 'Dashboard', icon: LayoutGrid },
-  { href: '/user/vehicles', label: 'Available Vehicles', icon: Car },
+  { href: '/user/vehicles', label: 'Vehicles', icon: Car },
   { href: '/user/bookings', label: 'My Bookings', icon: History },
   { href: '/user/profile', label: 'My Profile', icon: User },
 ];
