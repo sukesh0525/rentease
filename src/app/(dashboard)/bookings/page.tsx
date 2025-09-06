@@ -11,6 +11,17 @@ import { Book, CalendarCheck, Check, Wallet, X } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import type { Booking, Customer, Vehicle } from "@/lib/data";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+    DialogClose,
+} from "@/components/ui/dialog"
+
 
 export default function BookingsPage() {
     const { toast } = useToast();
@@ -121,8 +132,33 @@ export default function BookingsPage() {
                                                         <X className="h-4 w-4 mr-1" /> Decline
                                                     </Button>
                                                 </div>
+                                            ) : b.payment === 'Paid' ? (
+                                                 <Dialog>
+                                                    <DialogTrigger asChild>
+                                                        <Button variant="link" className="p-0 h-auto">View Invoice</Button>
+                                                    </DialogTrigger>
+                                                    <DialogContent>
+                                                        <DialogHeader>
+                                                        <DialogTitle>Payment Confirmed</DialogTitle>
+                                                        <DialogDescription>
+                                                            Payment for this booking has been successfully processed.
+                                                        </DialogDescription>
+                                                        </DialogHeader>
+                                                        <div className="py-4 text-sm">
+                                                            <p><strong>Booking ID:</strong> {b.id}</p>
+                                                            <p><strong>Customer:</strong> {b.customer?.name}</p>
+                                                            <p><strong>Vehicle:</strong> {b.vehicle?.brand} {b.vehicle?.name}</p>
+                                                            <p><strong>Amount Paid:</strong> Rs. {b.amount.toLocaleString()}</p>
+                                                        </div>
+                                                        <DialogFooter>
+                                                            <DialogClose asChild>
+                                                                <Button type="button" variant="secondary">Close</Button>
+                                                            </DialogClose>
+                                                        </DialogFooter>
+                                                    </DialogContent>
+                                                </Dialog>
                                             ) : (
-                                                <Button variant="link" className="p-0 h-auto">View</Button>
+                                                <Button variant="link" className="p-0 h-auto" disabled>View</Button>
                                             )}
                                         </TableCell>
                                     </TableRow>
