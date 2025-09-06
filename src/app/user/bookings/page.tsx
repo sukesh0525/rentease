@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { getPaymentBadge, getStatusBadge } from "@/lib/utils.tsx";
-import { Header } from "@/components/layout/header";
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
@@ -64,7 +63,6 @@ export default function UserBookingsPage() {
     if (isLoading) {
         return (
              <div className="fade-in space-y-6">
-                <Header title="My Bookings" />
                 <Card>
                     <CardHeader>
                         <Skeleton className="h-8 w-1/2" />
@@ -89,7 +87,6 @@ export default function UserBookingsPage() {
 
   return (
     <div className="fade-in space-y-6">
-        <Header title="My Bookings" />
         <Card>
             <CardHeader>
                 <CardTitle className="font-headline">All My Bookings</CardTitle>
