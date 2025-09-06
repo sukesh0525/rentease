@@ -23,12 +23,20 @@ export default function UserProfilePage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
+  // Add state for form fields
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [address, setAddress] = useState('');
+
   useEffect(() => {
     const userEmail = localStorage.getItem('loggedInUserEmail');
     if (userEmail) {
       const currentUser = customers.find(c => c.email === userEmail);
       if (currentUser) {
         setUser(currentUser);
+        setName(currentUser.name);
+        setPhone(currentUser.phone);
+        setAddress(currentUser.address || '');
         const savedAvatar = localStorage.getItem(`avatar_${userEmail}`);
         setAvatarPreview(savedAvatar || currentUser.avatar);
       }
@@ -52,6 +60,31 @@ export default function UserProfilePage() {
             }
         };
         reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSaveChanges = () => {
+    if (!user) return;
+
+    const userIndex = customers.findIndex(c => c.id === user.id);
+    if (userIndex > -1) {
+        customers[userIndex] = {
+            ...customers[userIndex],
+            name,
+            phone,
+            address,
+        };
+
+        toast({
+            title: "Profile Updated",
+            description: "Your information has been successfully saved.",
+        });
+    } else {
+         toast({
+            variant: 'destructive',
+            title: 'Update Failed',
+            description: 'Could not find your user data to update.',
+        });
     }
   };
 
@@ -157,21 +190,21 @@ export default function UserProfilePage() {
                 <CardContent className="space-y-4">
                     <div className="grid gap-2">
                         <Label htmlFor="name">Full Name</Label>
-                        <Input id="name" defaultValue={user.name} />
+                        <Input id="name" value={name} onChange={(e) => setName(e.target.value)} />
                     </div>
                     <div className="grid gap-2">
                         <Label htmlFor="email">Email</Label>
-                        <Input id="email" type="email" defaultValue={user.email} disabled />
+                        <Input id="email" type="email" value={user.email} disabled />
                     </div>
                     <div className="grid gap-2">
                         <Label htmlFor="phone">Phone</Label>
-                        <Input id="phone" type="tel" defaultValue={user.phone} />
+                        <Input id="phone" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} />
                     </div>
                      <div className="grid gap-2">
                         <Label htmlFor="address">Address</Label>
-                        <Textarea id="address" defaultValue={user.address} />
+                        <Textarea id="address" value={address} onChange={(e) => setAddress(e.target.value)} />
                     </div>
-                    <Button>Save Changes</Button>
+                    <Button onClick={handleSaveChanges}>Save Changes</Button>
                 </CardContent>
             </Card>
         </div>
