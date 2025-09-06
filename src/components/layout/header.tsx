@@ -14,7 +14,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuGroup,
 } from '@/components/ui/dropdown-menu';
-import { bookings, customers, vehicles } from '@/lib/data';
+import { bookings as initialBookings, customers, vehicles } from '@/lib/data';
 import { useToast } from '@/hooks/use-toast';
 import { useState, useEffect } from 'react';
 import type { Booking, Customer, Vehicle } from '@/lib/data';
@@ -35,23 +35,41 @@ export function Header({ title }: HeaderProps) {
   const { toast } = useToast();
   const [pendingBookings, setPendingBookings] = useState<PendingBooking[]>([]);
 
-  useEffect(() => {
-    const pending = bookings
-      .filter(b => b.status === 'Pending')
-      .map(b => ({
+  const loadPendingBookings = () => {
+    const storedBookingsRaw = localStorage.getItem('bookings');
+    const allBookings = storedBookingsRaw ? JSON.parse(storedBookingsRaw) : initialBookings;
+    
+    const pending = allBookings
+      .filter((b: Booking) => b.status === 'Pending')
+      .map((b: Booking) => ({
           ...b,
           customer: customers.find(c => c.id === b.customerId),
           vehicle: vehicles.find(v => v.id === b.vehicleId),
       }));
     setPendingBookings(pending);
+  }
+
+  useEffect(() => {
+    loadPendingBookings();
+    // Also listen to storage changes to update in real-time
+    window.addEventListener('storage', loadPendingBookings);
+    return () => {
+        window.removeEventListener('storage', loadPendingBookings);
+    };
   }, []);
 
   const handleBookingAction = (bookingId: string, newStatus: 'Confirmed' | 'Cancelled') => {
-      const booking = bookings.find(b => b.id === bookingId);
-      if (booking) {
-          booking.status = newStatus;
+      const storedBookingsRaw = localStorage.getItem('bookings');
+      let allBookings: Booking[] = storedBookingsRaw ? JSON.parse(storedBookingsRaw) : initialBookings;
+      
+      const bookingIndex = allBookings.findIndex(b => b.id === bookingId);
+      if (bookingIndex > -1) {
+          allBookings[bookingIndex].status = newStatus;
       }
-      setPendingBookings(current => current.filter(b => b.id !== bookingId));
+      
+      localStorage.setItem('bookings', JSON.stringify(allBookings));
+      loadPendingBookings(); // a bit inefficient but ensures state is sync
+      
       toast({
           title: `Booking ${newStatus}`,
           description: `The booking request ${bookingId} has been ${newStatus.toLowerCase()}.`,

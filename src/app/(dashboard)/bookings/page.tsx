@@ -1,19 +1,34 @@
 
 "use client";
 
-import { bookings, customers, vehicles } from "@/lib/data";
+import { bookings as initialBookings, customers, vehicles } from "@/lib/data";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { getPaymentBadge, getStatusBadge } from "@/lib/utils.tsx";
 import { StatCard } from "@/components/dashboard/stat-card";
 import { Book, CalendarCheck, Check, DollarSign, Wallet, X } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
+import type { Booking } from "@/lib/data";
 
 export default function BookingsPage() {
     const { toast } = useToast();
-    const [currentBookings, setCurrentBookings] = useState(bookings);
+    const [currentBookings, setCurrentBookings] = useState<Booking[]>(initialBookings);
+
+    useEffect(() => {
+        const storedBookings = localStorage.getItem('bookings');
+        if (storedBookings) {
+            setCurrentBookings(JSON.parse(storedBookings));
+        } else {
+            localStorage.setItem('bookings', JSON.stringify(initialBookings));
+        }
+    }, []);
+
+    const saveBookingsToLocalStorage = (bookingsToSave: Booking[]) => {
+        localStorage.setItem('bookings', JSON.stringify(bookingsToSave));
+        setCurrentBookings(bookingsToSave);
+    };
 
     const bookingDetails = currentBookings.map(b => {
         const customer = customers.find(c => c.id === b.customerId);
@@ -30,7 +45,7 @@ export default function BookingsPage() {
         const updatedBookings = currentBookings.map(b => 
             b.id === bookingId ? { ...b, status: newStatus } : b
         );
-        setCurrentBookings(updatedBookings);
+        saveBookingsToLocalStorage(updatedBookings);
         
         toast({
             title: `Booking ${newStatus}`,

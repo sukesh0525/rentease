@@ -2,7 +2,7 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import { bookings, customers, vehicles } from "@/lib/data";
+import { bookings as initialBookings, customers as initialCustomers, vehicles } from "@/lib/data";
 import type { Booking, Customer } from "@/lib/data";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -29,12 +29,17 @@ export default function UserBookingsPage() {
 
     useEffect(() => {
         const userEmail = localStorage.getItem('loggedInUserEmail');
+        const storedBookingsRaw = localStorage.getItem('bookings');
+        const storedCustomersRaw = localStorage.getItem('customers');
+
+        const allBookings: Booking[] = storedBookingsRaw ? JSON.parse(storedBookingsRaw) : initialBookings;
+        const allCustomers: Customer[] = storedCustomersRaw ? JSON.parse(storedCustomersRaw) : initialCustomers;
+        
         if (userEmail) {
-            const currentUser = customers.find(c => c.email === userEmail);
+            const currentUser = allCustomers.find(c => c.email === userEmail);
             setUser(currentUser || null);
             if (currentUser) {
-                // Filter bookings for the current user from the global bookings array
-                const currentUserBookings = bookings.filter(b => b.customerId === currentUser.id);
+                const currentUserBookings = allBookings.filter(b => b.customerId === currentUser.id);
                 setUserBookings(currentUserBookings);
             }
         }
@@ -42,18 +47,27 @@ export default function UserBookingsPage() {
     }, []);
 
     const handlePayment = (bookingId: string) => {
-        // Update booking payment status
-        const booking = bookings.find(b => b.id === bookingId);
-        if (booking) {
-            booking.payment = 'Paid';
-        }
-        setUserBookings(prev => prev.map(b => b.id === bookingId ? { ...b, payment: 'Paid' as const } : b));
+        const storedBookingsRaw = localStorage.getItem('bookings');
+        const storedCustomersRaw = localStorage.getItem('customers');
+        let allBookings: Booking[] = storedBookingsRaw ? JSON.parse(storedBookingsRaw) : initialBookings;
+        let allCustomers: Customer[] = storedCustomersRaw ? JSON.parse(storedCustomersRaw) : initialCustomers;
         
-        // Update customer's total spent
-        if (booking && user) {
-            user.totalSpent += booking.amount;
+        const bookingIndex = allBookings.findIndex(b => b.id === bookingId);
+        if (bookingIndex > -1) {
+            allBookings[bookingIndex].payment = 'Paid';
         }
 
+        const userIndex = allCustomers.findIndex(c => c.id === user?.id);
+        if (bookingIndex > -1 && userIndex > -1) {
+            allCustomers[userIndex].totalSpent += allBookings[bookingIndex].amount;
+            setUser(allCustomers[userIndex]);
+        }
+
+        localStorage.setItem('bookings', JSON.stringify(allBookings));
+        localStorage.setItem('customers', JSON.stringify(allCustomers));
+
+        setUserBookings(prev => prev.map(b => b.id === bookingId ? { ...b, payment: 'Paid' as const } : b));
+        
         toast({
             title: "Payment Successful!",
             description: "Your booking has been paid for.",

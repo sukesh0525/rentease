@@ -15,10 +15,10 @@ import {
 } from "@/components/ui/dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Label } from "@/components/ui/label";
-import type { Vehicle, Customer } from "@/lib/data";
+import type { Vehicle, Customer, Booking } from "@/lib/data";
 import { Calendar as CalendarIcon, Wallet } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { customers as initialCustomers, bookings } from "@/lib/data";
+import { customers as initialCustomers, bookings as initialBookings } from "@/lib/data";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 
@@ -80,8 +80,11 @@ export function BookingDialog({ vehicle, isOpen, onClose }: BookingDialogProps) 
             });
             return;
         }
+        
+        const storedBookingsRaw = localStorage.getItem('bookings');
+        const currentBookings: Booking[] = storedBookingsRaw ? JSON.parse(storedBookingsRaw) : initialBookings;
 
-        const newBooking = {
+        const newBooking: Booking = {
             id: `BK${Math.floor(1000 + Math.random() * 9000)}`,
             customerId: user.id,
             vehicleId: vehicle.id,
@@ -92,7 +95,11 @@ export function BookingDialog({ vehicle, isOpen, onClose }: BookingDialogProps) 
             payment: 'Pending' as const,
         };
 
-        bookings.push(newBooking);
+        const updatedBookings = [...currentBookings, newBooking];
+        localStorage.setItem('bookings', JSON.stringify(updatedBookings));
+
+        // This is a hack to notify other tabs/windows.
+        window.dispatchEvent(new Event('storage'));
 
         toast({
             title: 'Booking Request Sent!',
