@@ -21,7 +21,6 @@ const navItems = [
   { href: '/customers', label: 'Customers', icon: Users },
   { href: '/tracking', label: 'Vehicle Tracking', icon: MapPin },
   { href: '/reports', label: 'Reports', icon: BarChart3 },
-  { href: '/ai-insights', label: 'AI Insights', icon: Sparkles },
 ];
 
 export function SidebarNav() {
