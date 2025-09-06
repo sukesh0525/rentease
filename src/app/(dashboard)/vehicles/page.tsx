@@ -1,8 +1,8 @@
 
 "use client";
 
-import { useState } from "react";
-import { vehicles, type Vehicle } from "@/lib/data";
+import { useState, useEffect } from "react";
+import { vehicles as initialVehicles, type Vehicle } from "@/lib/data";
 import { VehicleCard } from "@/components/vehicles/vehicle-card";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -14,10 +14,29 @@ import { AdminAddVehicleDialog } from "@/components/vehicles/admin-add-vehicle-d
 import { useToast } from "@/hooks/use-toast";
 
 export default function VehiclesPage() {
-  const [vehicleList, setVehicleList] = useState(vehicles);
+  const [vehicleList, setVehicleList] = useState<Vehicle[]>(initialVehicles);
   const [vehicleToEdit, setVehicleToEdit] = useState<Vehicle | null>(null);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const { toast } = useToast();
+
+  const loadVehicles = () => {
+    const storedVehicles = localStorage.getItem('vehicles');
+    setVehicleList(storedVehicles ? JSON.parse(storedVehicles) : initialVehicles);
+  };
+
+  useEffect(() => {
+    loadVehicles();
+    window.addEventListener('storage', loadVehicles);
+    return () => {
+        window.removeEventListener('storage', loadVehicles);
+    };
+  }, []);
+
+  const saveVehiclesToLocalStorage = (vehiclesToSave: Vehicle[]) => {
+      localStorage.setItem('vehicles', JSON.stringify(vehiclesToSave));
+      setVehicleList(vehiclesToSave);
+      window.dispatchEvent(new Event('storage'));
+  };
 
   const handleViewDetails = (vehicle: Vehicle) => {
     setVehicleToEdit(vehicle);
@@ -31,7 +50,7 @@ export default function VehiclesPage() {
     const updatedVehicles = vehicleList.map(v => 
         v.id === updatedVehicle.id ? updatedVehicle : v
     );
-    setVehicleList(updatedVehicles);
+    saveVehiclesToLocalStorage(updatedVehicles);
 
     toast({
         title: "Vehicle Updated",
@@ -46,7 +65,9 @@ export default function VehiclesPage() {
         id: vehicleList.length > 0 ? Math.max(...vehicleList.map(v => v.id)) + 1 : 1,
         status: 'Available',
     };
-    setVehicleList(prev => [...prev, vehicleWithId]);
+    const updatedVehicles = [...vehicleList, vehicleWithId];
+    saveVehiclesToLocalStorage(updatedVehicles);
+
     toast({
         title: "Vehicle Added",
         description: `${vehicleWithId.brand} ${vehicleWithId.name} has been added to the fleet.`

@@ -3,7 +3,7 @@
 
 import { StatCard } from "@/components/dashboard/stat-card";
 import { Car, DollarSign, Gauge, Users, Wrench } from "lucide-react";
-import { bookings as initialBookings, customers, vehicles as initialVehicles, type Booking, type Customer, type Vehicle } from "@/lib/data";
+import { bookings as initialBookings, customers as initialCustomers, vehicles as initialVehicles, type Booking, type Customer, type Vehicle } from "@/lib/data";
 import { DashboardClientContent } from "@/components/dashboard/dashboard-client-content";
 import { useEffect, useState, useCallback } from "react";
 import { LoadingScreen } from "@/components/common/loader";
@@ -30,9 +30,11 @@ export default function DashboardPage() {
         setIsLoading(true);
         const storedBookingsRaw = localStorage.getItem('bookings');
         const storedVehiclesRaw = localStorage.getItem('vehicles');
+        const storedCustomersRaw = localStorage.getItem('customers');
 
         const bookings: Booking[] = storedBookingsRaw ? JSON.parse(storedBookingsRaw) : initialBookings;
         const vehicles: Vehicle[] = storedVehiclesRaw ? JSON.parse(storedVehiclesRaw) : initialVehicles;
+        const customers: Customer[] = storedCustomersRaw ? JSON.parse(storedCustomersRaw) : initialCustomers;
 
         const totalVehicles = vehicles.length;
         const availableNow = vehicles.filter(v => v.status === 'Available').length;

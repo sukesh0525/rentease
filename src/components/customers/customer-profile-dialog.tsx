@@ -12,10 +12,11 @@ import {
   DialogClose
 } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { bookings, vehicles, type Customer } from "@/lib/data";
+import { bookings as initialBookings, vehicles, type Customer } from "@/lib/data";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { getStatusBadge } from "@/lib/utils.tsx";
 import { Star, Calendar, Wallet } from "lucide-react";
+import { useEffect, useState } from "react";
 
 interface CustomerProfileDialogProps {
   customer: Customer;
@@ -24,6 +25,15 @@ interface CustomerProfileDialogProps {
 }
 
 export function CustomerProfileDialog({ customer, isOpen, onClose }: CustomerProfileDialogProps) {
+  const [bookings, setBookings] = useState(initialBookings);
+
+  useEffect(() => {
+    const storedBookings = localStorage.getItem('bookings');
+    if (storedBookings) {
+        setBookings(JSON.parse(storedBookings));
+    }
+  }, [isOpen]);
+
   if (!customer) return null;
 
   const customerBookings = bookings

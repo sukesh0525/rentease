@@ -1,8 +1,8 @@
 
 "use client";
 
-import { useState } from "react";
-import { customers, type Customer } from "@/lib/data";
+import { useState, useEffect } from "react";
+import { customers as initialCustomers, type Customer } from "@/lib/data";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -11,11 +11,25 @@ import { Briefcase, Users, Wallet, Star } from "lucide-react";
 import { CustomerProfileDialog } from "@/components/customers/customer-profile-dialog";
 
 export default function CustomersPage() {
+    const [customerList, setCustomerList] = useState<Customer[]>(initialCustomers);
     const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
 
-    const totalCustomers = customers.length;
-    const corporateClients = customers.filter(c => c.type === 'Corporate').length;
-    const totalSpentAll = customers.reduce((acc, c) => acc + c.totalSpent, 0);
+    const loadCustomers = () => {
+        const storedCustomers = localStorage.getItem('customers');
+        setCustomerList(storedCustomers ? JSON.parse(storedCustomers) : initialCustomers);
+    };
+
+    useEffect(() => {
+        loadCustomers();
+        window.addEventListener('storage', loadCustomers);
+        return () => {
+            window.removeEventListener('storage', loadCustomers);
+        };
+    }, []);
+
+    const totalCustomers = customerList.length;
+    const corporateClients = customerList.filter(c => c.type === 'Corporate').length;
+    const totalSpentAll = customerList.reduce((acc, c) => acc + c.totalSpent, 0);
     const avgCustomerValue = totalCustomers > 0 ? totalSpentAll / totalCustomers : 0;
 
     const handleViewProfile = (customer: Customer) => {
@@ -36,7 +50,7 @@ export default function CustomersPage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {customers.map(c => (
+                {customerList.map(c => (
                     <Card key={c.id} className="flex flex-col interactive-card">
                         <CardHeader>
                             <div className="flex items-center justify-between w-full">
